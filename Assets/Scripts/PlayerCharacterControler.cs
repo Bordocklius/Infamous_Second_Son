@@ -9,6 +9,11 @@ public class PlayerCharacterControler : MonoBehaviour
 
     private Vector2 _movementDirection;
 
+    // Jump related variables
+    public float _jumpDuration;
+    private float _jumpTimer;
+    private bool _isGrounded = true;
+    private bool _isJumping = false;
     void Awake()
     {
         _inputActions = new PlayerControls();
@@ -16,7 +21,7 @@ public class PlayerCharacterControler : MonoBehaviour
         _inputActions.Gameplay.Move.performed += ctx => _movementDirection = ctx.ReadValue<Vector2>();
         _inputActions.Gameplay.Move.canceled += ctx => _movementDirection = Vector2.zero;
 
-        _inputActions.Gameplay.Jump.performed += ctx => Jump();
+        _inputActions.Gameplay.Jump.performed += ctx => StartJump();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -45,6 +50,14 @@ public class PlayerCharacterControler : MonoBehaviour
         }
     }
 
+    private void FixedUpdate()
+    {
+        if(_isJumping)
+        {
+
+        }
+    }
+
     private void MoveCharacter()
     {
         Vector3 movement = new Vector3(_movementDirection.x, 0, _movementDirection.y);
@@ -52,8 +65,20 @@ public class PlayerCharacterControler : MonoBehaviour
         _characterController.Move(movement);
     }
 
-    private void Jump()
+    private void StartJump()
     {
-        
+        if(!_isGrounded)
+        {
+            return;
+        }
+
+        _isJumping = !_isJumping;
+        _jumpTimer = 0f;
+    }
+
+    private void HandleJump()
+    {
+        _jumpTimer += Time.fixedDeltaTime;
+
     }
 }
