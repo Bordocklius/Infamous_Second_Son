@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerCharacterControler : MonoBehaviour
 {
@@ -9,11 +10,13 @@ public class PlayerCharacterControler : MonoBehaviour
 
     private Vector2 _movementDirection;
 
+    [Space(10)]
+    [Header("Jump attributes")]
     // Jump related variables
-    public float _jumpDuration;
-    private float _jumpTimer;
-    private bool _isGrounded = true;
+    public float _jumpHeight;
     private bool _isJumping = false;
+
+    // AWAKE
     void Awake()
     {
         _inputActions = new PlayerControls();
@@ -40,10 +43,9 @@ public class PlayerCharacterControler : MonoBehaviour
         _inputActions.Gameplay.Disable();
     }
 
-    // Update is called once per frame
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ UPDATE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     void Update()
     {
-        Debug.Log(_movementDirection);
         if(_movementDirection != Vector2.zero)
         {
             MoveCharacter();
@@ -54,10 +56,11 @@ public class PlayerCharacterControler : MonoBehaviour
     {
         if(_isJumping)
         {
-
+            
+            HandleJump();
         }
     }
-
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     private void MoveCharacter()
     {
         Vector3 movement = new Vector3(_movementDirection.x, 0, _movementDirection.y);
@@ -67,18 +70,19 @@ public class PlayerCharacterControler : MonoBehaviour
 
     private void StartJump()
     {
-        if(!_isGrounded)
+        if(!_characterController.isGrounded)
         {
+            Debug.Log("not grounded");
             return;
         }
 
+        Debug.Log("Jump");
+
         _isJumping = !_isJumping;
-        _jumpTimer = 0f;
     }
 
     private void HandleJump()
     {
-        _jumpTimer += Time.fixedDeltaTime;
 
     }
 }
