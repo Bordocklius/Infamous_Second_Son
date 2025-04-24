@@ -10,15 +10,21 @@ public class PlayerCharacterControler : MonoBehaviour
 
     private Vector2 _movementDirection;
 
+    public Vector3 _minVerticalVelocity;
+    private Vector3 _verticalVelocity;
+    
+
     [Space(10)]
     [Header("Jump attributes")]
     // Jump related variables
-    public float _jumpHeight;
+    public Vector3 _jumpVelocity;
     private bool _isJumping = false;
 
     // AWAKE
     void Awake()
     {
+        _verticalVelocity = _minVerticalVelocity;
+
         _inputActions = new PlayerControls();
 
         _inputActions.Gameplay.Move.performed += ctx => _movementDirection = ctx.ReadValue<Vector2>();
@@ -46,20 +52,15 @@ public class PlayerCharacterControler : MonoBehaviour
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ UPDATE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     void Update()
     {
+        _characterController.Move(_verticalVelocity * Time.deltaTime);
+        Debug.Log(_characterController.isGrounded);
+
         if(_movementDirection != Vector2.zero)
         {
             MoveCharacter();
         }
     }
 
-    private void FixedUpdate()
-    {
-        if(_isJumping)
-        {
-            
-            HandleJump();
-        }
-    }
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     private void MoveCharacter()
     {
@@ -79,10 +80,6 @@ public class PlayerCharacterControler : MonoBehaviour
         Debug.Log("Jump");
 
         _isJumping = !_isJumping;
-    }
-
-    private void HandleJump()
-    {
-
+        _verticalVelocity = _jumpVelocity;
     }
 }
