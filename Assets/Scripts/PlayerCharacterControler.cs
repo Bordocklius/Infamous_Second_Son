@@ -4,6 +4,10 @@ public class PlayerCharacterControler : MonoBehaviour
 {
     public PlayerControls _inputActions;
     public CharacterController _characterController;
+    public Transform _ccTransform;
+    public Transform _pcTransform;
+
+    public Transform _orientation;
     
     public float _speed;
 
@@ -24,6 +28,7 @@ public class PlayerCharacterControler : MonoBehaviour
     public Transform _cameraOrbitPointX;
     public Transform _cameraOrbitPointY;
     public float _rotationSpeed;
+    public float _cameraRotSpeed;
     private Vector2 _cameraMoveDirection;
     public Camera _camera;
     private Transform _cameraPos;
@@ -37,6 +42,8 @@ public class PlayerCharacterControler : MonoBehaviour
     {
         _camera = Camera.main;
         _cameraPos = _camera.transform;
+
+        _ccTransform = _characterController.transform;
 
         _verticalVelocity = _minVerticalVelocity;
 
@@ -81,6 +88,16 @@ public class PlayerCharacterControler : MonoBehaviour
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     private void MoveCharacter()
     {
+        //Vector3 viewingDirection = _ccTransform.position - new Vector3(_orientation.position.x, _ccTransform.position.y, _orientation.position.z);
+        //_orientation.forward = viewingDirection.normalized;
+
+        //Vector3 inputDirection = _movementDirection.y * _orientation.forward + _movementDirection.x * _orientation.right;
+        //if (inputDirection != Vector3.zero)
+        //{
+        //    _ccTransform.forward = Vector3.Slerp(_ccTransform.forward, inputDirection, _rotationSpeed * Time.deltaTime);
+        //}
+
+
         Vector3 cameraForward = new Vector3(_camera.transform.forward.x, 0, _camera.transform.forward.z).normalized;
         Vector3 cameraRight = new Vector3(_camera.transform.right.x, 0, _camera.transform.right.z).normalized;
 
@@ -90,21 +107,22 @@ public class PlayerCharacterControler : MonoBehaviour
         movement.y = _verticalVelocity.y;
         movement *= _speed * Time.deltaTime;
         _characterController.Move(movement);
+        _pcTransform.position = _ccTransform.position;
 
         Vector3 lookvector = new Vector3(movement.x, 0, movement.z);
         Quaternion targetRotation = Quaternion.LookRotation(lookvector);
-        Debug.Log(lookvector);
+        //_characterController.transform.rotation = Quaternion.Slerp(_characterController.transform.rotation, _targetRotation, _rotationSpeed * Time.deltaTime);
 
         _slerpTimer += Time.deltaTime;
-        if(_targetRotation != targetRotation)
+        if (_targetRotation != targetRotation)
         {
             _slerpTimer = 0f;
             _targetRotation = targetRotation;
         }
 
         if (_movementDirection.sqrMagnitude > 0.01f)
-        {            
-            _characterController.transform.rotation = Quaternion.Slerp(_characterController.transform.rotation, _targetRotation, _speed * _slerpTimer/_slerpDuration);
+        {
+            _characterController.transform.rotation = Quaternion.Slerp(_characterController.transform.rotation, _targetRotation, _speed * _slerpTimer / _slerpDuration);
         }
     }
 
@@ -124,15 +142,10 @@ public class PlayerCharacterControler : MonoBehaviour
 
     private void MoveCamera()
     {
-        float xRot = _cameraMoveDirection.x * _rotationSpeed * Time.deltaTime;
-        float yRot = _cameraMoveDirection.y * _rotationSpeed * Time.deltaTime;
+        float xRot = _cameraMoveDirection.x * _cameraRotSpeed * Time.deltaTime;
+        float yRot = _cameraMoveDirection.y * _cameraRotSpeed * Time.deltaTime;
         _cameraOrbitPointX.rotation *= Quaternion.AngleAxis(xRot, Vector3.up);
-        _cameraOrbitPointY.rotation *= Quaternion.AngleAxis(yRot, Vector3.right);
+        _cameraOrbitPointY.rotation *= Quaternion.AngleAxis(-yRot, Vector3.right);
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawLine(_characterController.transform.position ,_characterController.transform.forward);
-    }
 }
