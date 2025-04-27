@@ -548,7 +548,7 @@ MonoBehaviour:
   _cameraOrbitPointX: {fileID: 163536295}
   _cameraOrbitPointY: {fileID: 532341133}
   _normalFOV: 60
-  _zoomFOV: 20
+  _aimFOV: 25
   _cameraRotSpeed: 100
   _yLimits: {x: -10, y: 45}
   _lerpDuration: 2
@@ -923,7 +923,7 @@ MonoBehaviour:
   _cameraOrbitPointX: {fileID: 0}
   _cameraOrbitPointY: {fileID: 0}
   _normalFOV: 0
-  _zoomFOV: 0
+  _aimFOV: 0
   _cameraRotSpeed: 0
   _yLimits: {x: 0, y: 0}
   _lerpDuration: 0

@@ -38,7 +38,7 @@ public class CameraControler : MonoBehaviour
         _inputActions.Gameplay.MoveCamera.canceled += ctx => _cameraMoveDirection = Vector2.zero;
 
         _inputActions.Gameplay.Aim.performed += ctx => StartAim();
-        _inputActions.Gameplay.Aim.canceled += ctx => StartAim();
+        _inputActions.Gameplay.Aim.canceled += ctx => StopAim();
 
     }
 
@@ -71,7 +71,7 @@ public class CameraControler : MonoBehaviour
             MoveCamera();
         }
 
-        if(_changeFOV && _mainCamera.fieldOfView != _aimFOV)
+        if(_changeFOV)
         {
             Aim();
         }
@@ -98,17 +98,24 @@ public class CameraControler : MonoBehaviour
 
     private void StartAim()
     {
-        _changeFOV = !_changeFOV;
-        _isAiming = !_isAiming;
+        Debug.Log("Aiming");
+        _changeFOV = true;
+        _isAiming = true;
         _lerpTimer = 0f;
-        Debug.Log("Started Zooming");
+    }
+
+    private void StopAim()
+    {
+        Debug.Log("Stopped aiming");
+        _changeFOV = true;
+        _isAiming = false;
+        _lerpTimer = 0f;
     }
 
     private void Aim()
     {
         if(_changeFOV)
         {
-            Debug.Log("Zooming");
             _lerpTimer += Time.deltaTime;
             ChangeFOV();
 
@@ -137,11 +144,11 @@ public class CameraControler : MonoBehaviour
     {
         if (_isAiming)
         {
-            _mainCamera.fieldOfView = _normalFOV;
+            _mainCamera.fieldOfView = _aimFOV;
         }
         else
         {
-            _mainCamera.fieldOfView = _aimFOV;
+            _mainCamera.fieldOfView = _normalFOV;
         }
     }
 }
