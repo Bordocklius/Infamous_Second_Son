@@ -53,6 +53,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Aim"",
+                    ""type"": ""Button"",
+                    ""id"": ""5cf59ee6-d3ba-493a-aaac-e1636bd4661b"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": ""Hold"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -64,6 +73,83 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0e9c203a-8a3e-4efe-a417-03244b19cdb9"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""2D Vector"",
+                    ""id"": ""df4679d0-9e74-4df6-905d-8ee4033e2f17"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""d692ec05-82dd-463e-94db-71ffd7a5fe46"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""75c05887-3c86-44aa-b012-24f97d33fc10"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""583b8ef4-c263-44ba-a089-f6af02897935"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""499982f6-6347-40a5-a985-0e01153e5dab"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""14a57db8-b31c-41ec-9569-cc59d4179df1"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move Camera"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -88,6 +174,39 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""36831334-dcaa-4bc1-9cbf-6e6229877c7c"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c2761fbc-718e-406f-a6cb-7712b31c9c5f"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Aim"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5b816ea3-bb50-4224-8609-be558c3094bd"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Aim"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -99,6 +218,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Gameplay_Move = m_Gameplay.FindAction("Move", throwIfNotFound: true);
         m_Gameplay_MoveCamera = m_Gameplay.FindAction("Move Camera", throwIfNotFound: true);
         m_Gameplay_Jump = m_Gameplay.FindAction("Jump", throwIfNotFound: true);
+        m_Gameplay_Aim = m_Gameplay.FindAction("Aim", throwIfNotFound: true);
     }
 
     ~@PlayerControls()
@@ -168,6 +288,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_Move;
     private readonly InputAction m_Gameplay_MoveCamera;
     private readonly InputAction m_Gameplay_Jump;
+    private readonly InputAction m_Gameplay_Aim;
     public struct GameplayActions
     {
         private @PlayerControls m_Wrapper;
@@ -175,6 +296,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @Move => m_Wrapper.m_Gameplay_Move;
         public InputAction @MoveCamera => m_Wrapper.m_Gameplay_MoveCamera;
         public InputAction @Jump => m_Wrapper.m_Gameplay_Jump;
+        public InputAction @Aim => m_Wrapper.m_Gameplay_Aim;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -193,6 +315,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Jump.started += instance.OnJump;
             @Jump.performed += instance.OnJump;
             @Jump.canceled += instance.OnJump;
+            @Aim.started += instance.OnAim;
+            @Aim.performed += instance.OnAim;
+            @Aim.canceled += instance.OnAim;
         }
 
         private void UnregisterCallbacks(IGameplayActions instance)
@@ -206,6 +331,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Jump.started -= instance.OnJump;
             @Jump.performed -= instance.OnJump;
             @Jump.canceled -= instance.OnJump;
+            @Aim.started -= instance.OnAim;
+            @Aim.performed -= instance.OnAim;
+            @Aim.canceled -= instance.OnAim;
         }
 
         public void RemoveCallbacks(IGameplayActions instance)
@@ -228,5 +356,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnMove(InputAction.CallbackContext context);
         void OnMoveCamera(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
+        void OnAim(InputAction.CallbackContext context);
     }
 }
