@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class PlayerCharacterControler : MonoBehaviour
@@ -30,6 +31,9 @@ public class PlayerCharacterControler : MonoBehaviour
     public Camera _camera;
     public Vector2 _yLimits;
 
+    [Space(10)]
+    [Header("Power related")]
+    private bool _canDrainPower = false;
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ AWAKE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     void Awake()
@@ -44,7 +48,14 @@ public class PlayerCharacterControler : MonoBehaviour
         _inputActions.Gameplay.Move.canceled += ctx => _movementDirection = Vector2.zero;
 
         _inputActions.Gameplay.Jump.performed += ctx => StartJump();
+
+        _inputActions.Gameplay.Movementability.performed += ctx => MovementAbility();
+        _inputActions.Gameplay.Powerdrain.performed += ctx => PowerDrain();
+
+        _inputActions.Gameplay.Lightrangedattack.performed += ctx => LightRangedAttack();
     }
+
+    
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -116,6 +127,21 @@ public class PlayerCharacterControler : MonoBehaviour
 
         _isJumping = !_isJumping;
         _verticalVelocity = _jumpVelocity;
+    }
+
+    private void MovementAbility()
+    {
+        Debug.Log("Movement ability");
+    }
+
+    private void PowerDrain()
+    {
+        Debug.Log("PowerDrain");
+    }
+
+    private void LightRangedAttack()
+    {
+        Debug.Log("Fire");
     }
 
 }

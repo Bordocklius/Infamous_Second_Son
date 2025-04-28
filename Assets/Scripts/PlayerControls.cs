@@ -62,6 +62,42 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": ""Hold"",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Movement ability"",
+                    ""type"": ""Button"",
+                    ""id"": ""22da5947-940b-43d1-b36f-a9de58f62381"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Power drain"",
+                    ""type"": ""Button"",
+                    ""id"": ""52a8c77d-ef50-4c87-b962-a68aa1279e1f"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Light ranged attack"",
+                    ""type"": ""Button"",
+                    ""id"": ""d97e338e-bd96-4ce6-b089-b489f44a096a"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Heavy ranged attack"",
+                    ""type"": ""Button"",
+                    ""id"": ""41ecf090-496e-428a-9dc0-f40a5514e559"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -196,6 +232,94 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""Aim"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b39a8652-d14d-4a26-837b-f3e41b878c05"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement ability"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f74b267f-46ac-4a3c-820d-a411b936c15d"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement ability"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ed2e9e56-6b9d-42c2-be1b-faec67777f74"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Light ranged attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""74f1d51c-2fbc-431e-9bfd-36b8df5ce0ff"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Light ranged attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""67a8b2ca-fc1e-4dea-a06b-66854d30e379"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Power drain"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6b0de188-1829-45af-a552-1349991f8034"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Power drain"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6b5eb639-a96c-42bc-88e9-1cd4f631f193"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Heavy ranged attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cebae9d8-967e-41c0-ab41-6aa690d8351d"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Heavy ranged attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -208,6 +332,10 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Gameplay_MoveCamera = m_Gameplay.FindAction("Move Camera", throwIfNotFound: true);
         m_Gameplay_Jump = m_Gameplay.FindAction("Jump", throwIfNotFound: true);
         m_Gameplay_Aim = m_Gameplay.FindAction("Aim", throwIfNotFound: true);
+        m_Gameplay_Movementability = m_Gameplay.FindAction("Movement ability", throwIfNotFound: true);
+        m_Gameplay_Powerdrain = m_Gameplay.FindAction("Power drain", throwIfNotFound: true);
+        m_Gameplay_Lightrangedattack = m_Gameplay.FindAction("Light ranged attack", throwIfNotFound: true);
+        m_Gameplay_Heavyrangedattack = m_Gameplay.FindAction("Heavy ranged attack", throwIfNotFound: true);
     }
 
     ~@PlayerControls()
@@ -278,6 +406,10 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_MoveCamera;
     private readonly InputAction m_Gameplay_Jump;
     private readonly InputAction m_Gameplay_Aim;
+    private readonly InputAction m_Gameplay_Movementability;
+    private readonly InputAction m_Gameplay_Powerdrain;
+    private readonly InputAction m_Gameplay_Lightrangedattack;
+    private readonly InputAction m_Gameplay_Heavyrangedattack;
     public struct GameplayActions
     {
         private @PlayerControls m_Wrapper;
@@ -286,6 +418,10 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @MoveCamera => m_Wrapper.m_Gameplay_MoveCamera;
         public InputAction @Jump => m_Wrapper.m_Gameplay_Jump;
         public InputAction @Aim => m_Wrapper.m_Gameplay_Aim;
+        public InputAction @Movementability => m_Wrapper.m_Gameplay_Movementability;
+        public InputAction @Powerdrain => m_Wrapper.m_Gameplay_Powerdrain;
+        public InputAction @Lightrangedattack => m_Wrapper.m_Gameplay_Lightrangedattack;
+        public InputAction @Heavyrangedattack => m_Wrapper.m_Gameplay_Heavyrangedattack;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -307,6 +443,18 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Aim.started += instance.OnAim;
             @Aim.performed += instance.OnAim;
             @Aim.canceled += instance.OnAim;
+            @Movementability.started += instance.OnMovementability;
+            @Movementability.performed += instance.OnMovementability;
+            @Movementability.canceled += instance.OnMovementability;
+            @Powerdrain.started += instance.OnPowerdrain;
+            @Powerdrain.performed += instance.OnPowerdrain;
+            @Powerdrain.canceled += instance.OnPowerdrain;
+            @Lightrangedattack.started += instance.OnLightrangedattack;
+            @Lightrangedattack.performed += instance.OnLightrangedattack;
+            @Lightrangedattack.canceled += instance.OnLightrangedattack;
+            @Heavyrangedattack.started += instance.OnHeavyrangedattack;
+            @Heavyrangedattack.performed += instance.OnHeavyrangedattack;
+            @Heavyrangedattack.canceled += instance.OnHeavyrangedattack;
         }
 
         private void UnregisterCallbacks(IGameplayActions instance)
@@ -323,6 +471,18 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Aim.started -= instance.OnAim;
             @Aim.performed -= instance.OnAim;
             @Aim.canceled -= instance.OnAim;
+            @Movementability.started -= instance.OnMovementability;
+            @Movementability.performed -= instance.OnMovementability;
+            @Movementability.canceled -= instance.OnMovementability;
+            @Powerdrain.started -= instance.OnPowerdrain;
+            @Powerdrain.performed -= instance.OnPowerdrain;
+            @Powerdrain.canceled -= instance.OnPowerdrain;
+            @Lightrangedattack.started -= instance.OnLightrangedattack;
+            @Lightrangedattack.performed -= instance.OnLightrangedattack;
+            @Lightrangedattack.canceled -= instance.OnLightrangedattack;
+            @Heavyrangedattack.started -= instance.OnHeavyrangedattack;
+            @Heavyrangedattack.performed -= instance.OnHeavyrangedattack;
+            @Heavyrangedattack.canceled -= instance.OnHeavyrangedattack;
         }
 
         public void RemoveCallbacks(IGameplayActions instance)
@@ -346,5 +506,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnMoveCamera(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnAim(InputAction.CallbackContext context);
+        void OnMovementability(InputAction.CallbackContext context);
+        void OnPowerdrain(InputAction.CallbackContext context);
+        void OnLightrangedattack(InputAction.CallbackContext context);
+        void OnHeavyrangedattack(InputAction.CallbackContext context);
     }
 }
