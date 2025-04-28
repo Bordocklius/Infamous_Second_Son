@@ -6,16 +6,16 @@ public class CameraControler : MonoBehaviour
     public PlayerControls _inputActions;
     [Header("Camera")]
     public Camera _mainCamera;
+    public Camera _normalCamera;
+    public Camera _aimCamera;
 
     [Space(10)]
     [Header("Positions")]
     public Transform _cameraOrbitPointX;
-    public Transform _cameraOrbitPointY;    
-
-    [Space(10)]
-    [Header("FOVs")]
-    public float _normalFOV;
-    public float _aimFOV;
+    public Transform _cameraOrbitPointY;
+    public Transform _mainCameraTransform;
+    public Transform _normalCameraTransform;
+    public Transform _aimCameraTransform;
 
     [Space(10)]
     [Header("Settings")]
@@ -26,7 +26,7 @@ public class CameraControler : MonoBehaviour
 
     private Vector2 _cameraMoveDirection;
 
-    private bool _changeFOV = false;
+    private bool _changePos = false;
     private bool _isAiming = false;
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ AWAKE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -59,6 +59,8 @@ public class CameraControler : MonoBehaviour
         {
             _mainCamera = Camera.main;
         }
+
+        _mainCamera.fieldOfView = _normalCamera.fieldOfView;
     }
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ UPDATE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
@@ -71,7 +73,7 @@ public class CameraControler : MonoBehaviour
             MoveCamera();
         }
 
-        if(_changeFOV)
+        if(_changePos)
         {
             Aim();
         }
@@ -99,7 +101,7 @@ public class CameraControler : MonoBehaviour
     private void StartAim()
     {
         Debug.Log("Aiming");
-        _changeFOV = true;
+        _changePos = true;
         _isAiming = true;
         _lerpTimer = 0f;
     }
@@ -107,48 +109,52 @@ public class CameraControler : MonoBehaviour
     private void StopAim()
     {
         Debug.Log("Stopped aiming");
-        _changeFOV = true;
+        _changePos = true;
         _isAiming = false;
         _lerpTimer = 0f;
     }
 
     private void Aim()
     {
-        if(_changeFOV)
+        if(_changePos)
         {
             _lerpTimer += Time.deltaTime;
-            ChangeFOV();
+            ChangePos();
 
             if(_lerpTimer >= _lerpDuration)
             {
-                _changeFOV = false;
+                _changePos = false;
                 _lerpTimer = 0f;
-                SetFOVAfter();
+                SetPosAfter();
             }
         }
     }
 
-    private void ChangeFOV()
+    private void ChangePos()
     {
         if (_isAiming)
         {
-            _mainCamera.fieldOfView = Mathf.Lerp(_mainCamera.fieldOfView, _aimFOV, _lerpTimer / _lerpDuration);
+            _mainCameraTransform.position = Vector3.Lerp(_mainCameraTransform.position, _aimCameraTransform.position, _lerpTimer / _lerpDuration);
+            _mainCamera.fieldOfView = Mathf.Lerp(_mainCamera.fieldOfView, _aimCamera.fieldOfView, _lerpTimer / _lerpDuration);
         }
         else
         {
-            _mainCamera.fieldOfView = Mathf.Lerp(_mainCamera.fieldOfView, _normalFOV, _lerpTimer / _lerpDuration);
+            _mainCameraTransform.position = Vector3.Lerp(_mainCameraTransform.position, _normalCameraTransform.position, _lerpTimer / _lerpDuration);
+            _mainCamera.fieldOfView = Mathf.Lerp(_mainCamera.fieldOfView, _normalCamera.fieldOfView, _lerpTimer / _lerpDuration);
         }
     }
 
-    private void SetFOVAfter()
+    private void SetPosAfter()
     {
         if (_isAiming)
         {
-            _mainCamera.fieldOfView = _aimFOV;
+            _mainCameraTransform.position = _aimCameraTransform.position;
+            _mainCamera.fieldOfView = _aimCamera.fieldOfView;
         }
         else
         {
-            _mainCamera.fieldOfView = _normalFOV;
+            _mainCameraTransform.position = _normalCameraTransform.position;
+            _mainCamera.fieldOfView = _normalCamera.fieldOfView;
         }
     }
 }
