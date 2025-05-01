@@ -3,33 +3,44 @@ using UnityEngine;
 
 public class PlayerCharacterControler : MonoBehaviour
 {
-    public PlayerControls _inputActions;
-    public CharacterController _characterController;
-    public Transform _characterModelTransform;
 
-    public float _speed;
+    public PlayerControls _inputActions;
+
+    [SerializeField]
+    private CharacterController _characterController;
+    [SerializeField]
+    private Transform _characterModelTransform;
+
+    [SerializeField]
+    private float _speed;
 
     private Vector2 _movementDirection;
 
-    public Vector3 _minVerticalVelocity;
+    [SerializeField]
+    private Vector3 _minVerticalVelocity;
     private Vector3 _verticalVelocity;
 
 
     [Space(10)]
     [Header("Jump attributes")]
     // Jump related variables
-    public Vector3 _jumpVelocity;
+    [SerializeField]
+    private Vector3 _jumpVelocity;
     private bool _isJumping = false;
 
     [Space(10)]
     [Header("Camera")]
-    public Transform _cameraOrbitPointX;
-    public Transform _cameraOrbitPointY;
-    public float _rotationSpeed;
-    public float _cameraRotSpeed;
+    [SerializeField]
+    private Transform _cameraOrbitPointX;
+    [SerializeField]
+    private Transform _cameraOrbitPointY;
+    [SerializeField]
+    private float _rotationSpeed;
+    [SerializeField]
+    private float _cameraRotSpeed;
     private Vector2 _cameraMoveDirection;
-    public Camera _camera;
-    public Vector2 _yLimits;
+    [SerializeField]
+    private Camera _camera;
 
     [Space(10)]
     [Header("Power related")]
@@ -88,6 +99,7 @@ public class PlayerCharacterControler : MonoBehaviour
 
         // Apply movement & jump
         _verticalVelocity.y = Mathf.Clamp(_verticalVelocity.y + _minVerticalVelocity.y * Time.deltaTime, _minVerticalVelocity.y, _jumpVelocity.y);
+        Debug.Log(_verticalVelocity.y);
         Vector3 movement = (cameraRight * _movementDirection.x + cameraForward * _movementDirection.y).normalized;
 
         //Vector3 movement = new Vector3(_movementDirection.x, _verticalVelocity.y, _movementDirection.y);
@@ -119,11 +131,8 @@ public class PlayerCharacterControler : MonoBehaviour
     {
         if (!_characterController.isGrounded)
         {
-            Debug.Log("not grounded");
             return;
         }
-
-        Debug.Log("Jump");
 
         _isJumping = !_isJumping;
         _verticalVelocity = _jumpVelocity;

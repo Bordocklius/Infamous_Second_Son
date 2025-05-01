@@ -5,29 +5,49 @@ public class CameraControler : MonoBehaviour
 {
     public PlayerControls _inputActions;
     [Header("Camera")]
-    public Camera _mainCamera;
-    public Camera _normalCamera;
-    public Camera _aimCamera;
+    [SerializeField]
+    private Camera _mainCamera;
+    [SerializeField]
+    private Camera _normalCamera;
+    [SerializeField]
+    private Camera _aimCamera;
 
     [Space(10)]
     [Header("Positions")]
-    public Transform _cameraOrbitPointX;
-    public Transform _cameraOrbitPointY;
-    public Transform _mainCameraTransform;
-    public Transform _normalCameraTransform;
-    public Transform _aimCameraTransform;
+    [SerializeField]
+    private Transform _cameraOrbitPointX;
+    [SerializeField]
+    private Transform _cameraOrbitPointY;
+    [SerializeField]
+    private Transform _mainCameraTransform;
+    [SerializeField]
+    private Transform _normalCameraTransform;
+    [SerializeField]
+    private Transform _aimCameraTransform;
+    [SerializeField]
+    private Transform _playerCharacterTransform;
 
     [Space(10)]
     [Header("Settings")]
-    public float _cameraRotSpeed;
-    public Vector2 _yLimits;
-    public float _lerpDuration;
+    [SerializeField]
+    private float _cameraRotSpeed;
+    [SerializeField]
+    private Vector2 _yLimits;
+    [SerializeField]
+    private LayerMask _rayCastLayerMask;
+    [SerializeField]
+    private float _lerpDuration;
     private float _lerpTimer;
+    private float _colidingLerpTimer;
 
     private Vector2 _cameraMoveDirection;
 
     private bool _changePos = false;
     private bool _isAiming = false;
+
+    private float _normalDistanceFromPlayer;
+    private float _aimDistanceFromPlayer;
+    private bool _isColliding = false;
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ AWAKE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     private void Awake()
@@ -61,6 +81,11 @@ public class CameraControler : MonoBehaviour
         }
 
         _mainCamera.fieldOfView = _normalCamera.fieldOfView;
+        _normalDistanceFromPlayer = Vector3.Distance(_normalCameraTransform.position, _playerCharacterTransform.position);
+        _aimDistanceFromPlayer = Vector3.Distance(_aimCameraTransform.position, _playerCharacterTransform.position);
+        Debug.Log(_normalDistanceFromPlayer);
+        Debug.Log(_aimDistanceFromPlayer);
+        Debug.Log(_normalCameraTransform.position - _playerCharacterTransform.position);
     }
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ UPDATE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
@@ -76,6 +101,23 @@ public class CameraControler : MonoBehaviour
         if(_changePos)
         {
             Aim();
+        }
+
+        Physics.Raycast(_playerCharacterTransform.position, (_mainCameraTransform.position - _playerCharacterTransform.position).normalized, out RaycastHit hit, _normalDistanceFromPlayer, ~_rayCastLayerMask.value);
+        if (hit.collider != null)
+        {
+            Debug.Log(hit.collider.name);
+            _isColliding = true;
+            _mainCameraTransform.position = hit.point;
+        }
+        else
+        {
+            _isColliding = false;
+        }
+        
+        if(!_isAiming && !_isColliding)
+        {
+            CollidingLerp();       
         }
 
     }
@@ -155,6 +197,18 @@ public class CameraControler : MonoBehaviour
         {
             _mainCameraTransform.position = _normalCameraTransform.position;
             _mainCamera.fieldOfView = _normalCamera.fieldOfView;
+        }
+    }
+
+    private void CollidingLerp()
+    {
+        _colidingLerpTimer += Time.deltaTime;
+        ChangePos();
+        if (_colidingLerpTimer >= _lerpDuration)
+        {
+            _changePos = false;
+            _colidingLerpTimer = 0f;
+            SetPosAfter();
         }
     }
 }
