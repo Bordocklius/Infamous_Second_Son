@@ -31,14 +31,7 @@ public class PlayerCharacterControler : MonoBehaviour
     [Space(10)]
     [Header("Camera")]
     [SerializeField]
-    private Transform _cameraOrbitPointX;
-    [SerializeField]
-    private Transform _cameraOrbitPointY;
-    [SerializeField]
     private float _rotationSpeed;
-    [SerializeField]
-    private float _cameraRotSpeed;
-    private Vector2 _cameraMoveDirection;
     [SerializeField]
     private Camera _camera;
 
@@ -111,8 +104,10 @@ public class PlayerCharacterControler : MonoBehaviour
         if (lookvector != Vector3.zero)
         {
             Quaternion targetRotation = Quaternion.LookRotation(lookvector);
-            _characterModelTransform.rotation = targetRotation;
+            _characterModelTransform.rotation = Quaternion.Slerp(_characterModelTransform.rotation, targetRotation, _rotationSpeed * Time.deltaTime);
+            //_characterModelTransform.rotation = targetRotation;
         }
+
 
         //_slerpTimer += Time.deltaTime;
         //if (_targetRotation != targetRotation)

@@ -107,12 +107,11 @@ MonoBehaviour:
   _characterController: {fileID: 4851152316526800972}
   _characterModelTransform: {fileID: 6353706136917847132}
   _speed: 10
-  _minVerticalVelocity: {x: 0, y: -5, z: 0}
-  _jumpVelocity: {x: 0, y: 2, z: 0}
+  _minVerticalVelocity: {x: 0, y: -2, z: 0}
+  _jumpVelocity: {x: 0, y: 1.5, z: 0}
   _cameraOrbitPointX: {fileID: 5748305375402856901}
   _cameraOrbitPointY: {fileID: 8169666848666984038}
   _rotationSpeed: 5
-  _cameraRotSpeed: 100
   _camera: {fileID: 2495191025442257740}
 --- !u!114 &767023469520364218
 MonoBehaviour:
@@ -136,7 +135,7 @@ MonoBehaviour:
   _aimCameraTransform: {fileID: 1943306953293977572}
   _playerCharacterTransform: {fileID: 4498131615358555468}
   _cameraRotSpeed: 100
-  _yLimits: {x: -25, y: 45}
+  _yLimits: {x: -30, y: 45}
   _rayCastLayerMask:
     serializedVersion: 2
     m_Bits: 64
