@@ -57,6 +57,7 @@ public class PlayerCharacterControler : MonoBehaviour
         _inputActions.Gameplay.Powerdrain.performed += ctx => PowerDrain();
 
         _inputActions.Gameplay.Lightrangedattack.performed += ctx => LightRangedAttack();
+        _inputActions.Gameplay.Heavyrangedattack.performed += ctx => HeavyRangedAttack();
     }
 
     
@@ -92,7 +93,6 @@ public class PlayerCharacterControler : MonoBehaviour
 
         // Apply movement & jump
         _verticalVelocity.y = Mathf.Clamp(_verticalVelocity.y + _minVerticalVelocity.y * Time.deltaTime, _minVerticalVelocity.y, _jumpVelocity.y);
-        Debug.Log(_verticalVelocity.y);
         Vector3 movement = (cameraRight * _movementDirection.x + cameraForward * _movementDirection.y).normalized;
 
         //Vector3 movement = new Vector3(_movementDirection.x, _verticalVelocity.y, _movementDirection.y);
@@ -107,19 +107,6 @@ public class PlayerCharacterControler : MonoBehaviour
             _characterModelTransform.rotation = Quaternion.Slerp(_characterModelTransform.rotation, targetRotation, _rotationSpeed * Time.deltaTime);
             //_characterModelTransform.rotation = targetRotation;
         }
-
-
-        //_slerpTimer += Time.deltaTime;
-        //if (_targetRotation != targetRotation)
-        //{
-        //    _slerpTimer = 0f;
-        //    _targetRotation = targetRotation;
-        //}
-
-        //if (_movementDirection.sqrMagnitude > 0.01f)
-        //{
-        //    _characterModelTransform.rotation = Quaternion.Slerp(_characterController.transform.rotation, _targetRotation, _speed * _slerpTimer / _slerpDuration);
-        //}
     }
 
     private void StartJump()
@@ -146,6 +133,11 @@ public class PlayerCharacterControler : MonoBehaviour
     private void LightRangedAttack()
     {
         Debug.Log("Fire");
+    }
+
+    private void HeavyRangedAttack()
+    {
+        Debug.Log("Heavy fire");
     }
 
 }

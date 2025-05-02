@@ -103,22 +103,8 @@ public class CameraControler : MonoBehaviour
             Aim();
         }
 
-        Physics.Raycast(_playerCharacterTransform.position, (_mainCameraTransform.position - _playerCharacterTransform.position).normalized, out RaycastHit hit, _normalDistanceFromPlayer, ~_rayCastLayerMask.value);
-        if (hit.collider != null)
-        {
-            Debug.Log(hit.collider.name);
-            _isColliding = true;
-            _mainCameraTransform.position = hit.point;
-        }
-        else
-        {
-            _isColliding = false;
-        }
-        
-        if(!_isAiming && !_isColliding)
-        {
-            CollidingLerp();       
-        }
+        // checks for collision with obstacles
+        CheckForCollision();
 
     }
 
@@ -142,7 +128,6 @@ public class CameraControler : MonoBehaviour
 
     private void StartAim()
     {
-        Debug.Log("Aiming");
         _changePos = true;
         _isAiming = true;
         _lerpTimer = 0f;
@@ -150,7 +135,6 @@ public class CameraControler : MonoBehaviour
 
     private void StopAim()
     {
-        Debug.Log("Stopped aiming");
         _changePos = true;
         _isAiming = false;
         _lerpTimer = 0f;
@@ -197,6 +181,26 @@ public class CameraControler : MonoBehaviour
         {
             _mainCameraTransform.position = _normalCameraTransform.position;
             _mainCamera.fieldOfView = _normalCamera.fieldOfView;
+        }
+    }
+
+    private void CheckForCollision()
+    {
+        Physics.Raycast(_playerCharacterTransform.position, (_mainCameraTransform.position - _playerCharacterTransform.position).normalized, out RaycastHit hit, _normalDistanceFromPlayer, ~_rayCastLayerMask.value);
+        if (hit.collider != null)
+        {
+            Debug.Log(hit.collider.name);
+            _isColliding = true;
+            _mainCameraTransform.position = hit.point;
+        }
+        else
+        {
+            _isColliding = false;
+        }
+
+        if (!_isAiming && !_isColliding)
+        {
+            CollidingLerp();
         }
     }
 
