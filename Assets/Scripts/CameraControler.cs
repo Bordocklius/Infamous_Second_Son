@@ -189,7 +189,6 @@ public class CameraControler : MonoBehaviour
         Physics.Raycast(_playerCharacterTransform.position, (_mainCameraTransform.position - _playerCharacterTransform.position).normalized, out RaycastHit hit, _normalDistanceFromPlayer, ~_rayCastLayerMask.value);
         if (hit.collider != null)
         {
-            Debug.Log(hit.collider.name);
             _isColliding = true;
             _mainCameraTransform.position = hit.point;
         }
