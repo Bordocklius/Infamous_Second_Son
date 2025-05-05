@@ -1,3 +1,4 @@
+using Mono.Cecil.Cil;
 using System;
 using UnityEngine;
 
@@ -37,6 +38,12 @@ public class PlayerCharacterControler : MonoBehaviour
 
     [Space(10)]
     [Header("Power related")]
+    [SerializeField]
+    private PowerBase _selectedPower;
+    [SerializeField]
+    private RectTransform _crosshair;
+    [SerializeField]
+    private Transform _shootPoint;
     private bool _canDrainPower = false;
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ AWAKE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -122,22 +129,29 @@ public class PlayerCharacterControler : MonoBehaviour
 
     private void MovementAbility()
     {
-        Debug.Log("Movement ability");
+        _selectedPower.MovementAbility();
     }
 
     private void PowerDrain()
     {
+        if(_canDrainPower == false)
+        {
+            return;
+        }
         Debug.Log("PowerDrain");
     }
 
     private void LightRangedAttack()
     {
         Debug.Log("Fire");
+        Vector3 crosshairPoint = _camera.ScreenToWorldPoint(_crosshair.position);
+        Vector3 targetDirection = -(crosshairPoint - (_shootPoint.position + new Vector3(0, 0, 0.5f))).normalized;
+        _selectedPower.FireLightAttack(_characterModelTransform.position, targetDirection);
     }
 
     private void HeavyRangedAttack()
     {
-        Debug.Log("Heavy fire");
+        //_selectedPower.FireHeavyAttack();
     }
 
 }
