@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerCharacterControler : MonoBehaviour
 {
 
-    public PlayerControls _inputActions;
+    public PlayerControls InputActions;
 
     [SerializeField]
     private CharacterController _characterController;
@@ -53,18 +53,18 @@ public class PlayerCharacterControler : MonoBehaviour
 
         _verticalVelocity = _minVerticalVelocity;
 
-        _inputActions = new PlayerControls();
+        InputActions = new PlayerControls();
 
-        _inputActions.Gameplay.Move.performed += ctx => _movementDirection = ctx.ReadValue<Vector2>();
-        _inputActions.Gameplay.Move.canceled += ctx => _movementDirection = Vector2.zero;
+        InputActions.Gameplay.Move.performed += ctx => _movementDirection = ctx.ReadValue<Vector2>();
+        InputActions.Gameplay.Move.canceled += ctx => _movementDirection = Vector2.zero;
 
-        _inputActions.Gameplay.Jump.performed += ctx => StartJump();
+        InputActions.Gameplay.Jump.performed += ctx => StartJump();
 
-        _inputActions.Gameplay.Movementability.performed += ctx => MovementAbility();
-        _inputActions.Gameplay.Powerdrain.performed += ctx => PowerDrain();
+        InputActions.Gameplay.Movementability.performed += ctx => MovementAbility();
+        InputActions.Gameplay.Powerdrain.performed += ctx => PowerDrain();
 
-        _inputActions.Gameplay.Lightrangedattack.performed += ctx => LightRangedAttack();
-        _inputActions.Gameplay.Heavyrangedattack.performed += ctx => HeavyRangedAttack();
+        InputActions.Gameplay.Lightrangedattack.performed += ctx => LightRangedAttack();
+        InputActions.Gameplay.Heavyrangedattack.performed += ctx => HeavyRangedAttack();
     }
 
     
@@ -77,12 +77,12 @@ public class PlayerCharacterControler : MonoBehaviour
 
     private void OnEnable()
     {
-        _inputActions.Gameplay.Enable();
+        InputActions.Gameplay.Enable();
     }
 
     private void OnDisable()
     {
-        _inputActions.Gameplay.Disable();
+        InputActions.Gameplay.Disable();
     }
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ UPDATE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

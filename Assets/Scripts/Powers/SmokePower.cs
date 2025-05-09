@@ -16,10 +16,6 @@ public class SmokePower : PowerBase
     }
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    public void FireLightAttack()
-    {
-
-    }
 
     public void FireHeavyAttack()
     {

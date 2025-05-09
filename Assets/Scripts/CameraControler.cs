@@ -1,9 +1,11 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class CameraControler : MonoBehaviour
 {
-    public PlayerControls _inputActions;
+    public PlayerControls InputActions;
+
     [Header("Camera")]
     [SerializeField]
     private Camera _mainCamera;
@@ -52,24 +54,24 @@ public class CameraControler : MonoBehaviour
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ AWAKE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     private void Awake()
     {
-        _inputActions = new PlayerControls();
+        InputActions = new PlayerControls();
 
-        _inputActions.Gameplay.MoveCamera.performed += ctx => _cameraMoveDirection = ctx.ReadValue<Vector2>();
-        _inputActions.Gameplay.MoveCamera.canceled += ctx => _cameraMoveDirection = Vector2.zero;
+        InputActions.Gameplay.MoveCamera.performed += ctx => _cameraMoveDirection = ctx.ReadValue<Vector2>();
+        InputActions.Gameplay.MoveCamera.canceled += ctx => _cameraMoveDirection = Vector2.zero;
 
-        _inputActions.Gameplay.Aim.performed += ctx => StartAim();
-        _inputActions.Gameplay.Aim.canceled += ctx => StopAim();
+        InputActions.Gameplay.Aim.performed += ctx => StartAim();
+        InputActions.Gameplay.Aim.canceled += ctx => StopAim();
 
     }
 
     private void OnEnable()
     {
-        _inputActions.Gameplay.Enable();
+        InputActions.Gameplay.Enable();
     }
 
     private void OnDisable()
     {
-        _inputActions.Gameplay.Disable();
+        InputActions.Gameplay.Disable();
     }
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ START ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
