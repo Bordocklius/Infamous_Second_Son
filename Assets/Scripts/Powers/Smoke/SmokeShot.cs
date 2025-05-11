@@ -1,12 +1,17 @@
-using System.Collections.Generic;
 using UnityEngine;
 
-public class SmokePower : PowerBase
+public class SmokeShot : MonoBehaviour
 {
+    [SerializeField]
+    private float _speed;
+
+    [SerializeField]
+    private Rigidbody _rb;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -17,13 +22,8 @@ public class SmokePower : PowerBase
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    public void FireHeavyAttack()
+    private void OnCollisionEnter(Collision collision)
     {
-
-    }
-
-    public override void MovementAbility()
-    {
-
+        Destroy(this.gameObject);
     }
 }

@@ -34,22 +34,34 @@ public class PlayerCharacterControler : MonoBehaviour
     [SerializeField]
     private float _rotationSpeed;
     [SerializeField]
-    private Camera _camera;
+    private Camera _mainCamera;
 
     [Space(10)]
     [Header("Power related")]
     [SerializeField]
-    private PowerBase _selectedPower;
+    private PowerBase _currentPower;
     [SerializeField]
     private RectTransform _crosshair;
     [SerializeField]
     private Transform _shootPoint;
+    [SerializeField]
+    private float _range;
     private bool _canDrainPower = false;
+    private bool _isDashing = false;
+
+    [Space(10)]
+    [Header("Smoke Dash")]
+    [SerializeField]
+    private float _smokeDashSpeed;
+    [SerializeField]
+    private float _dashDuration;
+    private float _dashTimer;
+
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ AWAKE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     void Awake()
     {
-        _camera = Camera.main;
+        _mainCamera = Camera.main;
 
         _verticalVelocity = _minVerticalVelocity;
 
@@ -95,16 +107,24 @@ public class PlayerCharacterControler : MonoBehaviour
     private void MoveCharacter()
     {
         //Make charactermovement follow camera orientation
-        Vector3 cameraForward = new Vector3(_camera.transform.forward.x, 0, _camera.transform.forward.z).normalized;
-        Vector3 cameraRight = new Vector3(_camera.transform.right.x, 0, _camera.transform.right.z).normalized;
+        Vector3 cameraForward = new Vector3(_mainCamera.transform.forward.x, 0, _mainCamera.transform.forward.z).normalized;
+        Vector3 cameraRight = new Vector3(_mainCamera.transform.right.x, 0, _mainCamera.transform.right.z).normalized;
 
         // Apply movement & jump
         _verticalVelocity.y = Mathf.Clamp(_verticalVelocity.y + _minVerticalVelocity.y * Time.deltaTime, _minVerticalVelocity.y, _jumpVelocity.y);
         Vector3 movement = (cameraRight * _movementDirection.x + cameraForward * _movementDirection.y).normalized;
 
-        //Vector3 movement = new Vector3(_movementDirection.x, _verticalVelocity.y, _movementDirection.y);
+        float movementspeed = _speed;
+        if (_isDashing && _dashTimer < _dashDuration)
+        {
+            _dashTimer += Time.deltaTime;
+            Debug.Log("Smokedashing");
+            _verticalVelocity.y = 0;
+            movementspeed = _smokeDashSpeed;
+        }
+
         movement.y = _verticalVelocity.y;
-        movement *= _speed * Time.deltaTime;
+        movement *= movementspeed * Time.deltaTime;
         _characterController.Move(movement);
 
         Vector3 lookvector = new Vector3(movement.x, 0, movement.z);
@@ -113,6 +133,11 @@ public class PlayerCharacterControler : MonoBehaviour
             Quaternion targetRotation = Quaternion.LookRotation(lookvector);
             _characterModelTransform.rotation = Quaternion.Slerp(_characterModelTransform.rotation, targetRotation, _rotationSpeed * Time.deltaTime);
             //_characterModelTransform.rotation = targetRotation;
+        }
+
+        if (_isDashing && _dashTimer >= _dashDuration)
+        {
+            _isDashing = false;
         }
     }
 
@@ -129,7 +154,13 @@ public class PlayerCharacterControler : MonoBehaviour
 
     private void MovementAbility()
     {
-        _selectedPower.MovementAbility();
+        if(_isDashing)
+        {
+            return;
+        }
+        Debug.Log("MovementAbility");
+        _isDashing = true;
+        _dashTimer = 0;
     }
 
     private void PowerDrain()
@@ -144,9 +175,20 @@ public class PlayerCharacterControler : MonoBehaviour
     private void LightRangedAttack()
     {
         Debug.Log("Fire");
-        Vector3 crosshairPoint = _camera.ScreenToWorldPoint(_crosshair.position);
-        Vector3 targetDirection = -(crosshairPoint - (_shootPoint.position + new Vector3(0, 0, 0.5f))).normalized;
-        _selectedPower.FireLightAttack(_characterModelTransform.position, targetDirection);
+        Ray ray = _mainCamera.ScreenPointToRay(_crosshair.position);
+        RaycastHit hit;
+        Debug.DrawRay(ray.origin, ray.direction * _range, Color.red, 2f, true);
+        Physics.Raycast(ray, out hit, _range);
+
+        if (hit.collider == null)
+        {
+            hit.point = ray.origin + ray.direction * _range;
+        }
+
+        Debug.DrawLine(ray.origin, hit.point, Color.blue, 2f, true);
+        //Debug.DrawRay(_mainCamera.ScreenToWorldPoint(_crosshair.position), _shootPoint.position.normalized * _range, Color.green, 2f, true);
+
+        _currentPower.FireLightAttack(_shootPoint.position, hit.point.normalized);
     }
 
     private void HeavyRangedAttack()

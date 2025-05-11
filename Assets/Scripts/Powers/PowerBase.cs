@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public abstract class PowerBase : MonoBehaviour
@@ -12,13 +13,23 @@ public abstract class PowerBase : MonoBehaviour
     [SerializeField]
     private float _heavyRangedSpeed;
 
+    [Space(10)]
     [SerializeField]
     private float _powerReserves;
+    [SerializeField]
+    private CharacterController _controller;
+    [SerializeField]
+    private Camera _camera;
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     public virtual void FireLightAttack(Vector3 shootpoint, Vector3 targetDirection)
     {
-        Debug.DrawRay(shootpoint, targetDirection, Color.red, 2f, true);
+        if(_powerReserves <= 0)
+        {
+            Debug.Log("No power reserves left");
+            return;
+        }
+        _powerReserves--;
         GameObject lightAttack = Instantiate(_lightRangedPrefab, shootpoint, Quaternion.identity);
         lightAttack.GetComponent<Rigidbody>().AddForce(targetDirection * _lightRangedSpeed, ForceMode.Impulse);
     }
@@ -28,5 +39,4 @@ public abstract class PowerBase : MonoBehaviour
         return;
     }
 
-    public abstract void MovementAbility();
 }
