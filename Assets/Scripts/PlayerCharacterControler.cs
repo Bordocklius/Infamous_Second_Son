@@ -39,13 +39,15 @@ public class PlayerCharacterControler : MonoBehaviour
     [Space(10)]
     [Header("Power related")]
     [SerializeField]
-    private PowerBase _currentPower;
+    public PowerBase CurrentPower;
     [SerializeField]
     private RectTransform _crosshair;
     [SerializeField]
     private Transform _shootPoint;
     [SerializeField]
     private float _range;
+    [SerializeField]
+    public static event Action<PlayerCharacterControler> OnFireLightAttack;
     private bool _canDrainPower = false;
     private bool _isDashing = false;
 
@@ -106,7 +108,7 @@ public class PlayerCharacterControler : MonoBehaviour
     {
         MoveCharacter();
 
-        if(!_isDashing && _currentPower is SmokePower && _dashTimer >= _dashDuration)
+        if(!_isDashing && CurrentPower is SmokePower && _dashTimer >= _dashDuration)
         {
             Physics.IgnoreLayerCollision(6, 8, false);
         }
@@ -124,10 +126,9 @@ public class PlayerCharacterControler : MonoBehaviour
         Vector3 movement = (cameraRight * _movementDirection.x + cameraForward * _movementDirection.y).normalized;
 
         float movementspeed = _speed;
-        if (_isDashing && _currentPower is SmokePower && _dashTimer < _dashDuration)
+        if (_isDashing && CurrentPower is SmokePower && _dashTimer < _dashDuration)
         {
             _dashTimer += Time.deltaTime;
-            Debug.Log("Smokedashing");
             _verticalVelocity.y = 0;
             movementspeed = _smokeDashSpeed;
         }
@@ -166,12 +167,13 @@ public class PlayerCharacterControler : MonoBehaviour
         {
             return;
         }
-        Debug.Log("MovementAbility");
+        
         _isDashing = true;
         _dashTimer = 0;
 
-        if(_currentPower is SmokePower)
+        if(CurrentPower is SmokePower)
         {
+            Debug.Log("Smoke dash");
             Physics.IgnoreLayerCollision(6, 8, true);
         }
     }
@@ -187,7 +189,12 @@ public class PlayerCharacterControler : MonoBehaviour
 
     private void LightRangedAttack()
     {
-        Debug.Log("Fire");
+        if(CurrentPower?.PowerReserves <= 0)
+        {
+            Debug.Log("No power reserves left");
+            return;
+        }
+
         Ray ray = _mainCamera.ScreenPointToRay(_crosshair.position);
         RaycastHit hit;
         Debug.DrawRay(ray.origin, ray.direction * _range, Color.red, 2f, true);
@@ -201,7 +208,8 @@ public class PlayerCharacterControler : MonoBehaviour
         Debug.DrawLine(ray.origin, hit.point, Color.blue, 2f, true);
         //Debug.DrawRay(_mainCamera.ScreenToWorldPoint(_crosshair.position), _shootPoint.position.normalized * _range, Color.green, 2f, true);
 
-        _currentPower.FireLightAttack(_shootPoint.position, (hit.point - _shootPoint.position).normalized);
+        CurrentPower.FireLightAttack(_shootPoint.position, (hit.point - _shootPoint.position).normalized);
+        OnFireLightAttack?.Invoke(this);
     }
 
     private void HeavyRangedAttack()
@@ -211,7 +219,7 @@ public class PlayerCharacterControler : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (_isDashing && _currentPower is SmokePower)
+        if (_isDashing && CurrentPower is SmokePower)
         {
             Physics.IgnoreCollision(collision.collider, _characterController);
         }

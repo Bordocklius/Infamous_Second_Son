@@ -189,8 +189,8 @@ public class CameraControler : MonoBehaviour
     }
 
     private void CheckForCollision()
-    {
-        LayerMask layermask = _playerRayCastMask |= (1 << _attackRayCastMask);
+    {        
+        LayerMask layermask = (1 << 6) | (1 << 7);
         Physics.Raycast(_playerCharacterTransform.position, (_mainCameraTransform.position - _playerCharacterTransform.position).normalized, out RaycastHit hit, _normalDistanceFromPlayer, ~layermask.value);
         //if(hit.collider.gameObject.layer == LayerMask.NameToLayer("Attack"))
         //{

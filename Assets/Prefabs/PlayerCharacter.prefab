@@ -118,6 +118,12 @@ MonoBehaviour:
   _range: 100
   _smokeDashSpeed: 20
   _dashDuration: 1
+  _playerMask:
+    serializedVersion: 2
+    m_Bits: 64
+  _passableTerrainMask:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!114 &767023469520364218
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -141,9 +147,12 @@ MonoBehaviour:
   _playerCharacterTransform: {fileID: 4498131615358555468}
   _cameraRotSpeed: 80
   _yLimits: {x: -30, y: 45}
-  _rayCastLayerMask:
+  _playerRayCastMask:
     serializedVersion: 2
     m_Bits: 64
+  _attackRayCastMask:
+    serializedVersion: 2
+    m_Bits: 128
   _lerpDuration: 2
 --- !u!114 &321815884164840773
 MonoBehaviour:

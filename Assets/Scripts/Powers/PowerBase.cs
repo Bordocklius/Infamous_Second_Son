@@ -15,7 +15,7 @@ public abstract class PowerBase : MonoBehaviour
 
     [Space(10)]
     [SerializeField]
-    private float _powerReserves;
+    public float PowerReserves;
     [SerializeField]
     private CharacterController _controller;
     [SerializeField]
@@ -24,12 +24,12 @@ public abstract class PowerBase : MonoBehaviour
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     public virtual void FireLightAttack(Vector3 shootpoint, Vector3 targetDirection)
     {
-        if(_powerReserves <= 0)
+        if(PowerReserves <= 0)
         {
             Debug.Log("No power reserves left");
             return;
         }
-        _powerReserves--;
+        PowerReserves--;
         GameObject lightAttack = Instantiate(_lightRangedPrefab, shootpoint, Quaternion.identity);
         lightAttack.GetComponent<Rigidbody>().AddForce(targetDirection * _lightRangedSpeed, ForceMode.Impulse);
     }
@@ -37,11 +37,6 @@ public abstract class PowerBase : MonoBehaviour
     public virtual void FireHeavyAttack(Vector3 target)
     {
         return;
-    }
-
-    public virtual void DrainPower()
-    {
-
     }
 
 }
