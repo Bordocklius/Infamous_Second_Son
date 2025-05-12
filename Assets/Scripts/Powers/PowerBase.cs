@@ -39,4 +39,9 @@ public abstract class PowerBase : MonoBehaviour
         return;
     }
 
+    public virtual void DrainPower()
+    {
+
+    }
+
 }

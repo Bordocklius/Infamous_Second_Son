@@ -55,6 +55,10 @@ public class PlayerCharacterControler : MonoBehaviour
     private float _smokeDashSpeed;
     [SerializeField]
     private float _dashDuration;
+    [SerializeField]
+    private LayerMask _playerMask;
+    [SerializeField]
+    private LayerMask _passableTerrainMask;
     private float _dashTimer;
 
 
@@ -101,6 +105,11 @@ public class PlayerCharacterControler : MonoBehaviour
     void Update()
     {
         MoveCharacter();
+
+        if(!_isDashing && _currentPower is SmokePower && _dashTimer >= _dashDuration)
+        {
+            Physics.IgnoreLayerCollision(6, 8, false);
+        }
     }
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -115,7 +124,7 @@ public class PlayerCharacterControler : MonoBehaviour
         Vector3 movement = (cameraRight * _movementDirection.x + cameraForward * _movementDirection.y).normalized;
 
         float movementspeed = _speed;
-        if (_isDashing && _dashTimer < _dashDuration)
+        if (_isDashing && _currentPower is SmokePower && _dashTimer < _dashDuration)
         {
             _dashTimer += Time.deltaTime;
             Debug.Log("Smokedashing");
@@ -147,7 +156,6 @@ public class PlayerCharacterControler : MonoBehaviour
         {
             return;
         }
-
         _isJumping = !_isJumping;
         _verticalVelocity = _jumpVelocity;
     }
@@ -161,6 +169,11 @@ public class PlayerCharacterControler : MonoBehaviour
         Debug.Log("MovementAbility");
         _isDashing = true;
         _dashTimer = 0;
+
+        if(_currentPower is SmokePower)
+        {
+            Physics.IgnoreLayerCollision(6, 8, true);
+        }
     }
 
     private void PowerDrain()
@@ -188,12 +201,20 @@ public class PlayerCharacterControler : MonoBehaviour
         Debug.DrawLine(ray.origin, hit.point, Color.blue, 2f, true);
         //Debug.DrawRay(_mainCamera.ScreenToWorldPoint(_crosshair.position), _shootPoint.position.normalized * _range, Color.green, 2f, true);
 
-        _currentPower.FireLightAttack(_shootPoint.position, hit.point.normalized);
+        _currentPower.FireLightAttack(_shootPoint.position, (hit.point - _shootPoint.position).normalized);
     }
 
     private void HeavyRangedAttack()
     {
         //_selectedPower.FireHeavyAttack();
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (_isDashing && _currentPower is SmokePower)
+        {
+            Physics.IgnoreCollision(collision.collider, _characterController);
+        }
     }
 
 }
