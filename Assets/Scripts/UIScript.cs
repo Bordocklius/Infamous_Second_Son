@@ -14,7 +14,7 @@ public class UIScript : MonoBehaviour
 
     private void OnEnable()
     {
-        PlayerCharacterControler.OnFireLightAttack += ChangePowerReservesUI;
+        PlayerCharacterControler.OnFireAttack += ChangePowerReservesUI;
     }
 
 

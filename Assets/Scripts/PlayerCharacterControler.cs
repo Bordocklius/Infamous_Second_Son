@@ -47,7 +47,7 @@ public class PlayerCharacterControler : MonoBehaviour
     [SerializeField]
     private float _range;
     [SerializeField]
-    public static event Action<PlayerCharacterControler> OnFireLightAttack;
+    public static event Action<PlayerCharacterControler> OnFireAttack;
     private bool _canDrainPower = false;
     private bool _isDashing = false;
 
@@ -62,6 +62,8 @@ public class PlayerCharacterControler : MonoBehaviour
     [SerializeField]
     private LayerMask _passableTerrainMask;
     private float _dashTimer;
+
+    private PowerSource _nearbyPowerSource;
 
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ AWAKE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -131,6 +133,10 @@ public class PlayerCharacterControler : MonoBehaviour
             _dashTimer += Time.deltaTime;
             _verticalVelocity.y = 0;
             movementspeed = _smokeDashSpeed;
+            if(movement == Vector3.zero)
+            {
+                movement = new Vector3(_mainCamera.transform.forward.x, _verticalVelocity.y, _mainCamera.transform.forward.z).normalized;
+            }
         }
 
         movement.y = _verticalVelocity.y;
@@ -180,21 +186,49 @@ public class PlayerCharacterControler : MonoBehaviour
 
     private void PowerDrain()
     {
-        if(_canDrainPower == false)
+        if(!_canDrainPower || !_nearbyPowerSource.Drainable)
         {
+            Debug.Log("Can't drain power");
             return;
         }
+
         Debug.Log("PowerDrain");
+        if(_nearbyPowerSource.PowerName.ToLower() == "smoke")
+        {
+
+        }
+        if (_nearbyPowerSource.PowerName.ToLower() == "neon")
+        {
+
+        }
     }
 
     private void LightRangedAttack()
     {
-        if(CurrentPower?.PowerReserves <= 0)
+        if(!CurrentPower.CheckPowerReserves())
         {
-            Debug.Log("No power reserves left");
             return;
         }
 
+        Vector3 direction = GetAimDirection();
+        CurrentPower.FireLightAttack(_shootPoint.position, direction);
+        OnFireAttack?.Invoke(this);
+    }
+
+    private void HeavyRangedAttack()
+    {
+        if (!CurrentPower.CheckPowerReserves())
+        {
+            return;
+        }
+
+        Vector3 direction = GetAimDirection();
+        CurrentPower.FireHeavyAttack(_shootPoint.position, direction);
+        OnFireAttack?.Invoke(this);
+    }
+
+    private Vector3 GetAimDirection()
+    {
         Ray ray = _mainCamera.ScreenPointToRay(_crosshair.position);
         RaycastHit hit;
         Debug.DrawRay(ray.origin, ray.direction * _range, Color.red, 2f, true);
@@ -206,23 +240,32 @@ public class PlayerCharacterControler : MonoBehaviour
         }
 
         Debug.DrawLine(ray.origin, hit.point, Color.blue, 2f, true);
-        //Debug.DrawRay(_mainCamera.ScreenToWorldPoint(_crosshair.position), _shootPoint.position.normalized * _range, Color.green, 2f, true);
 
-        CurrentPower.FireLightAttack(_shootPoint.position, (hit.point - _shootPoint.position).normalized);
-        OnFireLightAttack?.Invoke(this);
+        return (hit.point - _shootPoint.position).normalized;
     }
 
-    private void HeavyRangedAttack()
+    private void OnTriggerEnter(Collider other)
     {
-        //_selectedPower.FireHeavyAttack();
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (_isDashing && CurrentPower is SmokePower)
+        GameObject obj = other.gameObject;
+        if (obj.layer == 9) 
         {
-            Physics.IgnoreCollision(collision.collider, _characterController);
+            _canDrainPower = !_canDrainPower;
+            _nearbyPowerSource = obj.GetComponent<PowerSource>();
+            Debug.Log("InRange of power source");
         }
     }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if(_canDrainPower)
+        {
+            _canDrainPower = !_canDrainPower;
+            _nearbyPowerSource = null;
+            Debug.Log("Left powersource range");
+        }
+    }
+
+
+
 
 }
