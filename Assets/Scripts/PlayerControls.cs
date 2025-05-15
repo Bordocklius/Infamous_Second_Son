@@ -51,7 +51,16 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""id"": ""f5160c0d-13a2-4f59-9e31-7d638447c56a"",
                     ""expectedControlType"": """",
                     ""processors"": """",
-                    ""interactions"": """",
+                    ""interactions"": ""Press,Hold(duration=0.2,pressPoint=0.1)"",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Hover"",
+                    ""type"": ""Button"",
+                    ""id"": ""91b273c3-7ee3-4547-84ec-05bd2a69ad46"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": ""Hold(duration=0.2)"",
                     ""initialStateCheck"": false
                 },
                 {
@@ -320,6 +329,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""Heavy ranged attack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0a55a775-024b-4d76-aada-85cb35186d19"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Hover"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -331,6 +351,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Gameplay_Move = m_Gameplay.FindAction("Move", throwIfNotFound: true);
         m_Gameplay_MoveCamera = m_Gameplay.FindAction("Move Camera", throwIfNotFound: true);
         m_Gameplay_Jump = m_Gameplay.FindAction("Jump", throwIfNotFound: true);
+        m_Gameplay_Hover = m_Gameplay.FindAction("Hover", throwIfNotFound: true);
         m_Gameplay_Aim = m_Gameplay.FindAction("Aim", throwIfNotFound: true);
         m_Gameplay_Movementability = m_Gameplay.FindAction("Movement ability", throwIfNotFound: true);
         m_Gameplay_Powerdrain = m_Gameplay.FindAction("Power drain", throwIfNotFound: true);
@@ -405,6 +426,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_Move;
     private readonly InputAction m_Gameplay_MoveCamera;
     private readonly InputAction m_Gameplay_Jump;
+    private readonly InputAction m_Gameplay_Hover;
     private readonly InputAction m_Gameplay_Aim;
     private readonly InputAction m_Gameplay_Movementability;
     private readonly InputAction m_Gameplay_Powerdrain;
@@ -417,6 +439,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @Move => m_Wrapper.m_Gameplay_Move;
         public InputAction @MoveCamera => m_Wrapper.m_Gameplay_MoveCamera;
         public InputAction @Jump => m_Wrapper.m_Gameplay_Jump;
+        public InputAction @Hover => m_Wrapper.m_Gameplay_Hover;
         public InputAction @Aim => m_Wrapper.m_Gameplay_Aim;
         public InputAction @Movementability => m_Wrapper.m_Gameplay_Movementability;
         public InputAction @Powerdrain => m_Wrapper.m_Gameplay_Powerdrain;
@@ -440,6 +463,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Jump.started += instance.OnJump;
             @Jump.performed += instance.OnJump;
             @Jump.canceled += instance.OnJump;
+            @Hover.started += instance.OnHover;
+            @Hover.performed += instance.OnHover;
+            @Hover.canceled += instance.OnHover;
             @Aim.started += instance.OnAim;
             @Aim.performed += instance.OnAim;
             @Aim.canceled += instance.OnAim;
@@ -468,6 +494,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Jump.started -= instance.OnJump;
             @Jump.performed -= instance.OnJump;
             @Jump.canceled -= instance.OnJump;
+            @Hover.started -= instance.OnHover;
+            @Hover.performed -= instance.OnHover;
+            @Hover.canceled -= instance.OnHover;
             @Aim.started -= instance.OnAim;
             @Aim.performed -= instance.OnAim;
             @Aim.canceled -= instance.OnAim;
@@ -505,6 +534,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnMove(InputAction.CallbackContext context);
         void OnMoveCamera(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
+        void OnHover(InputAction.CallbackContext context);
         void OnAim(InputAction.CallbackContext context);
         void OnMovementability(InputAction.CallbackContext context);
         void OnPowerdrain(InputAction.CallbackContext context);

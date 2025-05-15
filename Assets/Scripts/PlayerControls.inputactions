@@ -29,7 +29,16 @@
                     "id": "f5160c0d-13a2-4f59-9e31-7d638447c56a",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": "",
+                    "interactions": "Press,Hold(duration=0.2,pressPoint=0.1)",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Hover",
+                    "type": "Button",
+                    "id": "91b273c3-7ee3-4547-84ec-05bd2a69ad46",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Hold(duration=0.2)",
                     "initialStateCheck": false
                 },
                 {
@@ -296,6 +305,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Heavy ranged attack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0a55a775-024b-4d76-aada-85cb35186d19",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Hover",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

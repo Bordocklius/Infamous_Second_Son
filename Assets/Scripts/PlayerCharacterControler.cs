@@ -1,6 +1,7 @@
 using Mono.Cecil.Cil;
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem.Interactions;
 
 public class PlayerCharacterControler : MonoBehaviour
 {
@@ -19,6 +20,7 @@ public class PlayerCharacterControler : MonoBehaviour
 
     [SerializeField]
     private Vector3 _minVerticalVelocity;
+    private Vector3 _slowedVerticalVelocity;
     private Vector3 _verticalVelocity;
 
 
@@ -28,6 +30,7 @@ public class PlayerCharacterControler : MonoBehaviour
     [SerializeField]
     private Vector3 _jumpVelocity;
     private bool _isJumping = false;
+    private bool _isHovering = false;
 
     [Space(10)]
     [Header("Camera")]
@@ -47,9 +50,11 @@ public class PlayerCharacterControler : MonoBehaviour
     [SerializeField]
     private float _range;
     [SerializeField]
-    public static event Action<PlayerCharacterControler> OnFireAttack;
+    public static event Action<PlayerCharacterControler> OnPowerReservesChange;
     private bool _canDrainPower = false;
     private bool _isDashing = false;
+    [SerializeField]
+    private GameObject _playerParticleSystem;
 
     [Space(10)]
     [Header("Smoke Dash")]
@@ -79,6 +84,12 @@ public class PlayerCharacterControler : MonoBehaviour
         InputActions.Gameplay.Move.canceled += ctx => _movementDirection = Vector2.zero;
 
         InputActions.Gameplay.Jump.performed += ctx => StartJump();
+        InputActions.Gameplay.Hover.performed += ctx => Hover();
+        InputActions.Gameplay.Hover.canceled += ctx =>
+        {
+            _isHovering = false;
+            _playerParticleSystem.SetActive(false);
+        };
 
         InputActions.Gameplay.Movementability.performed += ctx => MovementAbility();
         InputActions.Gameplay.Powerdrain.performed += ctx => PowerDrain();
@@ -87,12 +98,13 @@ public class PlayerCharacterControler : MonoBehaviour
         InputActions.Gameplay.Heavyrangedattack.performed += ctx => HeavyRangedAttack();
     }
 
-    
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
+        _playerParticleSystem.GetComponent<ParticleSystemRenderer>().material = CurrentPower.PowerMaterial;
     }
 
     private void OnEnable()
@@ -110,9 +122,10 @@ public class PlayerCharacterControler : MonoBehaviour
     {
         MoveCharacter();
 
-        if(!_isDashing && CurrentPower is SmokePower && _dashTimer >= _dashDuration)
+        if (!_isDashing && CurrentPower is SmokePower && _dashTimer >= _dashDuration)
         {
             Physics.IgnoreLayerCollision(6, 8, false);
+            _playerParticleSystem.SetActive(false);
         }
     }
 
@@ -124,7 +137,15 @@ public class PlayerCharacterControler : MonoBehaviour
         Vector3 cameraRight = new Vector3(_mainCamera.transform.right.x, 0, _mainCamera.transform.right.z).normalized;
 
         // Apply movement & jump
-        _verticalVelocity.y = Mathf.Clamp(_verticalVelocity.y + _minVerticalVelocity.y * Time.deltaTime, _minVerticalVelocity.y, _jumpVelocity.y);
+        if (_isHovering)
+        {
+            _verticalVelocity.y = Mathf.Clamp(_verticalVelocity.y + _slowedVerticalVelocity.y * Time.deltaTime, _minVerticalVelocity.y, _jumpVelocity.y);
+        }
+        else
+        {
+            _verticalVelocity.y = Mathf.Clamp(_verticalVelocity.y + _minVerticalVelocity.y * Time.deltaTime, _minVerticalVelocity.y, _jumpVelocity.y);
+        }
+
         Vector3 movement = (cameraRight * _movementDirection.x + cameraForward * _movementDirection.y).normalized;
 
         float movementspeed = _speed;
@@ -133,7 +154,7 @@ public class PlayerCharacterControler : MonoBehaviour
             _dashTimer += Time.deltaTime;
             _verticalVelocity.y = 0;
             movementspeed = _smokeDashSpeed;
-            if(movement == Vector3.zero)
+            if (movement == Vector3.zero)
             {
                 movement = new Vector3(_mainCamera.transform.forward.x, _verticalVelocity.y, _mainCamera.transform.forward.z).normalized;
             }
@@ -167,52 +188,70 @@ public class PlayerCharacterControler : MonoBehaviour
         _verticalVelocity = _jumpVelocity;
     }
 
-    private void MovementAbility()
+    private void Hover()
     {
-        if(_isDashing)
+        if (_characterController.isGrounded && _isHovering)
         {
             return;
         }
-        
+        _slowedVerticalVelocity = _minVerticalVelocity + new Vector3(0, CurrentPower.GlideSlow, 0);
+        _isHovering = true;
+        _playerParticleSystem.SetActive(true);
+        Debug.Log("Hover");
+    }
+
+    private void MovementAbility()
+    {
+        if (_isDashing)
+        {
+            return;
+        }
+
         _isDashing = true;
         _dashTimer = 0;
 
-        if(CurrentPower is SmokePower)
+        if (CurrentPower is SmokePower)
         {
             Debug.Log("Smoke dash");
             Physics.IgnoreLayerCollision(6, 8, true);
+            _playerParticleSystem.SetActive(true);
         }
     }
 
     private void PowerDrain()
     {
-        if(!_canDrainPower || !_nearbyPowerSource.Drainable)
+        if (!_canDrainPower || !_nearbyPowerSource.Drainable)
         {
             Debug.Log("Can't drain power");
             return;
         }
 
         Debug.Log("PowerDrain");
-        if(_nearbyPowerSource.PowerName.ToLower() == "smoke")
+        _nearbyPowerSource.DrainSource();
+        if (_nearbyPowerSource.PowerName.ToLower() == "smoke")
         {
-
+            CurrentPower = this.GetComponent<SmokePower>();
+            CurrentPower.PowerReserves = CurrentPower.MaxPowerReserves;
         }
         if (_nearbyPowerSource.PowerName.ToLower() == "neon")
         {
-
+            CurrentPower = this.GetComponent<NeonPower>();
+            CurrentPower.PowerReserves = CurrentPower.MaxPowerReserves;
         }
+        _playerParticleSystem.GetComponent<ParticleSystemRenderer>().material = CurrentPower.PowerMaterial;
+        OnPowerReservesChange?.Invoke(this);
     }
 
     private void LightRangedAttack()
     {
-        if(!CurrentPower.CheckPowerReserves())
+        if (!CurrentPower.CheckPowerReserves())
         {
             return;
         }
 
         Vector3 direction = GetAimDirection();
         CurrentPower.FireLightAttack(_shootPoint.position, direction);
-        OnFireAttack?.Invoke(this);
+        OnPowerReservesChange?.Invoke(this);
     }
 
     private void HeavyRangedAttack()
@@ -224,7 +263,7 @@ public class PlayerCharacterControler : MonoBehaviour
 
         Vector3 direction = GetAimDirection();
         CurrentPower.FireHeavyAttack(_shootPoint.position, direction);
-        OnFireAttack?.Invoke(this);
+        OnPowerReservesChange?.Invoke(this);
     }
 
     private Vector3 GetAimDirection()
@@ -247,7 +286,7 @@ public class PlayerCharacterControler : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         GameObject obj = other.gameObject;
-        if (obj.layer == 9) 
+        if (obj.layer == 9)
         {
             _canDrainPower = !_canDrainPower;
             _nearbyPowerSource = obj.GetComponent<PowerSource>();
@@ -257,7 +296,7 @@ public class PlayerCharacterControler : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if(_canDrainPower)
+        if (_canDrainPower)
         {
             _canDrainPower = !_canDrainPower;
             _nearbyPowerSource = null;

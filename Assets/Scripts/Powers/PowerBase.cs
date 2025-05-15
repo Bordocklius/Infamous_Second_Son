@@ -16,6 +16,14 @@ public abstract class PowerBase : MonoBehaviour
     [Space(10)]
     [SerializeField]
     public float PowerReserves;
+    [SerializeField]
+    public float MaxPowerReserves;
+    [SerializeField]
+    public Material PowerMaterial;
+
+    [Space(10)]
+    [SerializeField]
+    public float GlideSlow;
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     public virtual void FireLightAttack(Vector3 shootpoint, Vector3 targetDirection)
