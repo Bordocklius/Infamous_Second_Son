@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 100609482}
   m_Layer: 0
   m_Name: Cube
-  m_TagString: Untagged
+  m_TagString: climable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -405,7 +405,7 @@ GameObject:
   - component: {fileID: 360663577}
   m_Layer: 0
   m_Name: Cube (2)
-  m_TagString: Untagged
+  m_TagString: climable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -851,7 +851,7 @@ GameObject:
   - component: {fileID: 712192697}
   m_Layer: 0
   m_Name: Slope test
-  m_TagString: Untagged
+  m_TagString: climable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -987,7 +987,7 @@ GameObject:
   - component: {fileID: 756929825}
   m_Layer: 0
   m_Name: Cube (3)
-  m_TagString: Untagged
+  m_TagString: climable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1123,7 +1123,7 @@ GameObject:
   - component: {fileID: 812367338}
   m_Layer: 0
   m_Name: Slope test (1)
-  m_TagString: Untagged
+  m_TagString: climable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1457,7 +1457,7 @@ GameObject:
   - component: {fileID: 1031250457}
   m_Layer: 0
   m_Name: Cube (1)
-  m_TagString: Untagged
+  m_TagString: climable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1589,6 +1589,10 @@ PrefabInstance:
     - target: {fileID: 20956190989869942, guid: bcef726a3f57f714aa1e3c6fe292213c, type: 3}
       propertyPath: m_Name
       value: PassableWall (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 20956190989869942, guid: bcef726a3f57f714aa1e3c6fe292213c, type: 3}
+      propertyPath: m_TagString
+      value: climable
       objectReference: {fileID: 0}
     - target: {fileID: 7260377529524215820, guid: bcef726a3f57f714aa1e3c6fe292213c, type: 3}
       propertyPath: m_LocalScale.y
@@ -2117,7 +2121,7 @@ GameObject:
   - component: {fileID: 2049218412}
   m_Layer: 0
   m_Name: Cube (2)
-  m_TagString: Untagged
+  m_TagString: climable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

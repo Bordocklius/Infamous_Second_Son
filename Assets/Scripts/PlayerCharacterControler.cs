@@ -29,8 +29,10 @@ public class PlayerCharacterControler : MonoBehaviour
     // Jump related variables
     [SerializeField]
     private Vector3 _jumpVelocity;
+    private bool _canJump = false;
     private bool _isJumping = false;
     private bool _isHovering = false;
+    private bool _isClimbing = false;
 
     [Space(10)]
     [Header("Camera")]
@@ -130,13 +132,20 @@ public class PlayerCharacterControler : MonoBehaviour
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ UPDATE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     void Update()
-    {
+    {        
         MoveCharacter();
+
+        if (_characterController.isGrounded)
+        {
+            _canJump = true;
+            _isJumping = false;
+        }
 
         if (!_isDashing && CurrentPower is SmokePower && _dashTimer >= _dashDuration)
         {
             Physics.IgnoreLayerCollision(6, 8, false);
         }
+
         if(!_isDashing && _dashTimer >= _dashDuration)
         {
             _dashTimer = 0;
@@ -151,19 +160,9 @@ public class PlayerCharacterControler : MonoBehaviour
         Vector3 cameraForward = new Vector3(_mainCamera.transform.forward.x, 0, _mainCamera.transform.forward.z).normalized;
         Vector3 cameraRight = new Vector3(_mainCamera.transform.right.x, 0, _mainCamera.transform.right.z).normalized;
 
-        // Apply movement & jump
-        if (_isHovering)
-        {
-            _verticalVelocity.y = Mathf.Clamp(_verticalVelocity.y + _slowedVerticalVelocity.y * Time.deltaTime, _minVerticalVelocity.y, _jumpVelocity.y);
-        }
-        else
-        {
-            _verticalVelocity.y = Mathf.Clamp(_verticalVelocity.y + _minVerticalVelocity.y * Time.deltaTime, _minVerticalVelocity.y, _jumpVelocity.y);
-        }
-
         Vector3 movement = (cameraRight * _movementDirection.x + cameraForward * _movementDirection.y).normalized;
-
         float movementspeed = _speed;
+
         if (_isDashing && CurrentPower is SmokePower && _dashTimer < _dashDuration)
         {
             _dashTimer += Time.deltaTime;
@@ -177,24 +176,42 @@ public class PlayerCharacterControler : MonoBehaviour
         else if(_isDashing && CurrentPower is NeonPower)
         {
             _dashTimer += Time.deltaTime;
-            movementspeed = _neonSprintSpeed;
-            if(CheckWallInFront())
-            {
-                _verticalVelocity.y = _characterModelTransform.forward.y + Vector3.up.y;
-            }
+            movementspeed = _neonSprintSpeed;              
+        }
+
+        if(_isDashing && CurrentPower is NeonPower && CheckWallInFront())
+        {
+            _verticalVelocity.y = _characterModelTransform.forward.y + Vector3.up.y;
         }
 
         movement.y = _verticalVelocity.y;
+
+        _isClimbing = false;
+        if (CheckWallInFront() && !_isDashing)
+        {
+            _canJump = true;
+            _isClimbing = true;
+            _isJumping = false;
+        }
+
+        if (_isHovering)
+        {
+            _verticalVelocity.y = Mathf.Clamp(_verticalVelocity.y + _slowedVerticalVelocity.y * Time.deltaTime, _minVerticalVelocity.y, _jumpVelocity.y);
+        }        
+        else if(!_isClimbing || _isJumping)
+        {
+            _verticalVelocity.y = Mathf.Clamp(_verticalVelocity.y + _minVerticalVelocity.y * Time.deltaTime, _minVerticalVelocity.y, _jumpVelocity.y);
+        }
+        else if (_isClimbing)
+        {
+            _verticalVelocity.y = 0;
+        }
+
         movement *= movementspeed * Time.deltaTime;
         _characterController.Move(movement);
 
         Vector3 lookvector = new Vector3(movement.x, 0, movement.z);
-        if (lookvector != Vector3.zero)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(lookvector);
-            _characterModelTransform.rotation = Quaternion.Slerp(_characterModelTransform.rotation, targetRotation, _rotationSpeed * Time.deltaTime);
-            //_characterModelTransform.rotation = targetRotation;
-        }
+        RotateCharacter(lookvector);
 
         if (_isDashing && _dashTimer >= _dashDuration)
         {
@@ -202,29 +219,41 @@ public class PlayerCharacterControler : MonoBehaviour
         }
     }
 
+    private void RotateCharacter(Vector3 lookvector)
+    {
+        if (lookvector != Vector3.zero)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(lookvector);
+            _characterModelTransform.rotation = Quaternion.Slerp(_characterModelTransform.rotation, targetRotation, _rotationSpeed * Time.deltaTime);
+        }
+    }
+
     private bool CheckWallInFront()
     {
         RaycastHit hit;
         //Physics.Raycast(_characterController.transform.position, _characterModelTransform.forward, out hit, 1f, ~_playerMask);        
-        return Physics.Raycast(_characterController.transform.position, _characterModelTransform.forward, out hit, 1f, ~_playerMask);
+        Physics.Raycast(_characterController.transform.position, _characterModelTransform.forward, out hit, 1f, ~_playerMask);
+        if (hit.collider != null && hit.collider.gameObject.tag.ToLower() == "climable")
+        {
+            return true;
+        }
+        return false;
     }
 
     private void StartJump()
     {
-        if (!_characterController.isGrounded)
-        {
-            return;
-        }
+        if (!_canJump) return;
+
+        _canJump = false;
         _isJumping = !_isJumping;
+        _isClimbing = false;
         _verticalVelocity = _jumpVelocity;
     }
 
     private void Hover()
     {
-        if (_characterController.isGrounded && _isHovering)
-        {
-            return;
-        }
+        if (_characterController.isGrounded && _isHovering) return;
+
         _slowedVerticalVelocity = _minVerticalVelocity + new Vector3(0, CurrentPower.GlideSlow, 0);
         _isHovering = true;
         _playerParticleSystem.SetActive(true);
@@ -233,10 +262,7 @@ public class PlayerCharacterControler : MonoBehaviour
 
     private void MovementAbility()
     {
-        if (_isDashing)
-        {
-            return;
-        }
+        if (_isDashing) return;
 
         _isDashing = true;
         _dashTimer = 0;
@@ -281,10 +307,7 @@ public class PlayerCharacterControler : MonoBehaviour
 
     private void LightRangedAttack()
     {
-        if (!CurrentPower.CheckPowerReserves())
-        {
-            return;
-        }
+        if (!CurrentPower.CheckPowerReserves()) return;
 
         Vector3 direction = GetAimDirection();
         CurrentPower.FireLightAttack(_shootPoint.position, direction);
@@ -293,10 +316,7 @@ public class PlayerCharacterControler : MonoBehaviour
 
     private void HeavyRangedAttack()
     {
-        if (!CurrentPower.CheckHeavyPowerReserves())
-        {
-            return;
-        }
+        if (!CurrentPower.CheckHeavyPowerReserves()) return;
 
         Vector3 direction = GetAimDirection();
         CurrentPower.FireHeavyAttack(_shootPoint.position, direction);
@@ -317,7 +337,10 @@ public class PlayerCharacterControler : MonoBehaviour
 
         Debug.DrawLine(ray.origin, hit.point, Color.blue, 2f, true);
 
-        return (hit.point - _shootPoint.position).normalized;
+        Vector3 direction = (hit.point - _shootPoint.position).normalized;
+        _characterModelTransform.rotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
+
+        return direction;
     }
 
     private void OnTriggerEnter(Collider other)
