@@ -24,6 +24,8 @@ public abstract class PowerBase : MonoBehaviour
     public float MaxHeavyPowerReserves;
     [SerializeField]
     public Material PowerMaterial;
+    [SerializeField]
+    public string PowerName;
 
     [Space(10)]
     [SerializeField]

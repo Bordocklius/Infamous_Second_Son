@@ -55,6 +55,8 @@ public class PlayerCharacterControler : MonoBehaviour
     public static event Action<PlayerCharacterControler> OnPowerReservesChange;
     [SerializeField]
     public static event Action<PlayerCharacterControler> OnHeavyPowerReservesChange;
+    [SerializeField]
+    public static event Action<PlayerCharacterControler> OnPowerChange;
 
     private bool _canDrainPower = false;
     private bool _isDashing = false;
@@ -257,7 +259,6 @@ public class PlayerCharacterControler : MonoBehaviour
         _slowedVerticalVelocity = _minVerticalVelocity + new Vector3(0, CurrentPower.GlideSlow, 0);
         _isHovering = true;
         _playerParticleSystem.SetActive(true);
-        Debug.Log("Hover");
     }
 
     private void MovementAbility()
@@ -269,12 +270,10 @@ public class PlayerCharacterControler : MonoBehaviour
 
         if (CurrentPower is SmokePower)
         {
-            Debug.Log("Smoke dash");
             Physics.IgnoreLayerCollision(6, 8, true);            
         }
         if(CurrentPower is NeonPower)
         {
-            Debug.Log("Neon sprint");
         }
 
         _playerParticleSystem.SetActive(true);
@@ -284,11 +283,9 @@ public class PlayerCharacterControler : MonoBehaviour
     {
         if (!_canDrainPower || !_nearbyPowerSource.Drainable)
         {
-            Debug.Log("Can't drain power");
             return;
         }
 
-        Debug.Log("PowerDrain");
         _nearbyPowerSource.DrainSource();
         if (_nearbyPowerSource.PowerName.ToLower() == "smoke")
         {
@@ -302,7 +299,10 @@ public class PlayerCharacterControler : MonoBehaviour
         CurrentPower.PowerReserves = CurrentPower.MaxPowerReserves;
         CurrentPower.HeavyPowerReserves = CurrentPower.MaxHeavyPowerReserves;
         _playerParticleSystem.GetComponent<ParticleSystemRenderer>().material = CurrentPower.PowerMaterial;
+
         OnPowerReservesChange?.Invoke(this);
+        OnHeavyPowerReservesChange?.Invoke(this);
+        OnPowerChange?.Invoke(this);
     }
 
     private void LightRangedAttack()
@@ -350,7 +350,6 @@ public class PlayerCharacterControler : MonoBehaviour
         {
             _canDrainPower = !_canDrainPower;
             _nearbyPowerSource = obj.GetComponent<PowerSource>();
-            Debug.Log("InRange of power source");
         }
     }
 
@@ -360,7 +359,6 @@ public class PlayerCharacterControler : MonoBehaviour
         {
             _canDrainPower = !_canDrainPower;
             _nearbyPowerSource = null;
-            Debug.Log("Left powersource range");
         }
     }
 

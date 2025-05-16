@@ -7,6 +7,8 @@ public class UIScript : MonoBehaviour
     private TextMeshProUGUI _powerReservesText;
     [SerializeField]
     private TextMeshProUGUI _heavyPowerReservesText;
+    [SerializeField]
+    private TextMeshProUGUI _powerText;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -18,6 +20,7 @@ public class UIScript : MonoBehaviour
     {
         PlayerCharacterControler.OnPowerReservesChange += ChangePowerReservesUI;
         PlayerCharacterControler.OnHeavyPowerReservesChange += ChangeHeavyPowerReservesUI;
+        PlayerCharacterControler.OnPowerChange += ChangePowerTextUI;
     }
 
     // Update is called once per frame
@@ -34,5 +37,10 @@ public class UIScript : MonoBehaviour
     private void ChangeHeavyPowerReservesUI(PlayerCharacterControler playerCharacterControler)
     {
         _heavyPowerReservesText.text = $"Heavy reserves: {playerCharacterControler.CurrentPower.HeavyPowerReserves}";
+    }
+
+    private void ChangePowerTextUI(PlayerCharacterControler playerCharacterControler)
+    {
+        _powerText.text = $"Current power: {playerCharacterControler.CurrentPower.PowerName}";
     }
 }
