@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class SmokeShot : MonoBehaviour
+public class ShotProjectile : MonoBehaviour
 {
     [SerializeField]
     private float _lifeTime;

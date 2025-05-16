@@ -51,6 +51,9 @@ public class PlayerCharacterControler : MonoBehaviour
     private float _range;
     [SerializeField]
     public static event Action<PlayerCharacterControler> OnPowerReservesChange;
+    [SerializeField]
+    public static event Action<PlayerCharacterControler> OnHeavyPowerReservesChange;
+
     private bool _canDrainPower = false;
     private bool _isDashing = false;
     [SerializeField]
@@ -264,13 +267,14 @@ public class PlayerCharacterControler : MonoBehaviour
         if (_nearbyPowerSource.PowerName.ToLower() == "smoke")
         {
             CurrentPower = this.GetComponent<SmokePower>();
-            CurrentPower.PowerReserves = CurrentPower.MaxPowerReserves;
         }
         if (_nearbyPowerSource.PowerName.ToLower() == "neon")
         {
             CurrentPower = this.GetComponent<NeonPower>();
-            CurrentPower.PowerReserves = CurrentPower.MaxPowerReserves;
+            
         }
+        CurrentPower.PowerReserves = CurrentPower.MaxPowerReserves;
+        CurrentPower.HeavyPowerReserves = CurrentPower.MaxHeavyPowerReserves;
         _playerParticleSystem.GetComponent<ParticleSystemRenderer>().material = CurrentPower.PowerMaterial;
         OnPowerReservesChange?.Invoke(this);
     }
@@ -289,14 +293,14 @@ public class PlayerCharacterControler : MonoBehaviour
 
     private void HeavyRangedAttack()
     {
-        if (!CurrentPower.CheckPowerReserves())
+        if (!CurrentPower.CheckHeavyPowerReserves())
         {
             return;
         }
 
         Vector3 direction = GetAimDirection();
         CurrentPower.FireHeavyAttack(_shootPoint.position, direction);
-        OnPowerReservesChange?.Invoke(this);
+        OnHeavyPowerReservesChange?.Invoke(this);
     }
 
     private Vector3 GetAimDirection()

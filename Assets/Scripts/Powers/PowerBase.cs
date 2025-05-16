@@ -17,7 +17,11 @@ public abstract class PowerBase : MonoBehaviour
     [SerializeField]
     public float PowerReserves;
     [SerializeField]
+    public float HeavyPowerReserves;
+    [SerializeField]
     public float MaxPowerReserves;
+    [SerializeField]
+    public float MaxHeavyPowerReserves;
     [SerializeField]
     public Material PowerMaterial;
 
@@ -35,7 +39,7 @@ public abstract class PowerBase : MonoBehaviour
 
     public virtual void FireHeavyAttack(Vector3 shootpoint, Vector3 targetDirection)
     {
-        PowerReserves-= 5;
+        HeavyPowerReserves--;
         GameObject heavyAttack = Instantiate(_heavyRangedPrefab, transform.position, Quaternion.identity);
         heavyAttack.GetComponent<Rigidbody>().AddForce(targetDirection * _heavyRangedSpeed, ForceMode.Impulse);
     }
@@ -45,6 +49,16 @@ public abstract class PowerBase : MonoBehaviour
         if (PowerReserves <= 0)
         {
             Debug.Log("No power reserves left");
+            return false;
+        }
+        return true;
+    }
+
+    public bool CheckHeavyPowerReserves()
+    {
+        if (HeavyPowerReserves <= 0)
+        {
+            Debug.Log("No heavy power reserves left");
             return false;
         }
         return true;
