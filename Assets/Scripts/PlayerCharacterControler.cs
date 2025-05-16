@@ -65,7 +65,15 @@ public class PlayerCharacterControler : MonoBehaviour
     [SerializeField]
     private LayerMask _playerMask;
     [SerializeField]
-    private LayerMask _passableTerrainMask;
+    private LayerMask _passableTerrainMask;    
+
+    [Space(10)]
+    [Header("Neon Sprint")]
+    [SerializeField]
+    private float _neonSprintSpeed;
+    [SerializeField]
+    private float _neonSprintDuration;
+
     private float _dashTimer;
 
     private PowerSource _nearbyPowerSource;
@@ -125,6 +133,10 @@ public class PlayerCharacterControler : MonoBehaviour
         if (!_isDashing && CurrentPower is SmokePower && _dashTimer >= _dashDuration)
         {
             Physics.IgnoreLayerCollision(6, 8, false);
+        }
+        if(!_isDashing && _dashTimer >= _dashDuration)
+        {
+            _dashTimer = 0;
             _playerParticleSystem.SetActive(false);
         }
     }
@@ -159,6 +171,15 @@ public class PlayerCharacterControler : MonoBehaviour
                 movement = new Vector3(_mainCamera.transform.forward.x, _verticalVelocity.y, _mainCamera.transform.forward.z).normalized;
             }
         }
+        else if(_isDashing && CurrentPower is NeonPower)
+        {
+            _dashTimer += Time.deltaTime;
+            movementspeed = _neonSprintSpeed;
+            if(CheckWallInFront())
+            {
+                _verticalVelocity.y = _characterModelTransform.forward.y + Vector3.up.y;
+            }
+        }
 
         movement.y = _verticalVelocity.y;
         movement *= movementspeed * Time.deltaTime;
@@ -176,6 +197,13 @@ public class PlayerCharacterControler : MonoBehaviour
         {
             _isDashing = false;
         }
+    }
+
+    private bool CheckWallInFront()
+    {
+        RaycastHit hit;
+        //Physics.Raycast(_characterController.transform.position, _characterModelTransform.forward, out hit, 1f, ~_playerMask);        
+        return Physics.Raycast(_characterController.transform.position, _characterModelTransform.forward, out hit, 1f, ~_playerMask);
     }
 
     private void StartJump()
@@ -213,9 +241,14 @@ public class PlayerCharacterControler : MonoBehaviour
         if (CurrentPower is SmokePower)
         {
             Debug.Log("Smoke dash");
-            Physics.IgnoreLayerCollision(6, 8, true);
-            _playerParticleSystem.SetActive(true);
+            Physics.IgnoreLayerCollision(6, 8, true);            
         }
+        if(CurrentPower is NeonPower)
+        {
+            Debug.Log("Neon sprint");
+        }
+
+        _playerParticleSystem.SetActive(true);
     }
 
     private void PowerDrain()
@@ -303,8 +336,5 @@ public class PlayerCharacterControler : MonoBehaviour
             Debug.Log("Left powersource range");
         }
     }
-
-
-
 
 }

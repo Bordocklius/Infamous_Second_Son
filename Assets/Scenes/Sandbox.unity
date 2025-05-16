@@ -2232,7 +2232,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9040104793044265996, guid: ee6a78857e059784fa0304a069160853, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -5.17
+      value: -6.84
       objectReference: {fileID: 0}
     - target: {fileID: 9040104793044265996, guid: ee6a78857e059784fa0304a069160853, type: 3}
       propertyPath: m_LocalPosition.y
@@ -2240,7 +2240,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9040104793044265996, guid: ee6a78857e059784fa0304a069160853, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -6.99
+      value: -2.15
       objectReference: {fileID: 0}
     - target: {fileID: 9040104793044265996, guid: ee6a78857e059784fa0304a069160853, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2335,6 +2335,14 @@ PrefabInstance:
       propertyPath: _crosshair
       value: 
       objectReference: {fileID: 1137800232}
+    - target: {fileID: 6093136173417207580, guid: bb4dacb7c3d17404887f4f94357ff8f3, type: 3}
+      propertyPath: _neonSprintSpeed
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 6093136173417207580, guid: bb4dacb7c3d17404887f4f94357ff8f3, type: 3}
+      propertyPath: _neonSprintDuration
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 7655675552029548033, guid: bb4dacb7c3d17404887f4f94357ff8f3, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0
