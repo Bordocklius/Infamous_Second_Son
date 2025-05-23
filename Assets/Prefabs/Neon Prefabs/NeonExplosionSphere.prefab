@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 702855378606929883}
   - component: {fileID: 6807632305497506209}
   - component: {fileID: 8304193720431011299}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: NeonExplosionSphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}

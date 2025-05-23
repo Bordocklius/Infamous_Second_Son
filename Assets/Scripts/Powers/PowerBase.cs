@@ -26,6 +26,8 @@ public abstract class PowerBase : MonoBehaviour
     public float GlideSlow;
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    // Fire a light attack
     public virtual void FireLightAttack(Vector3 shootpoint, Vector3 targetDirection)
     {
         PowerReserves--;
@@ -33,6 +35,7 @@ public abstract class PowerBase : MonoBehaviour
         lightAttack.GetComponent<Rigidbody>().AddForce(targetDirection * _lightRangedSpeed, ForceMode.Impulse);
     }
 
+    // Fire a heavy attack
     public virtual void FireHeavyAttack(Vector3 shootpoint, Vector3 targetDirection)
     {
         HeavyPowerReserves--;
@@ -40,6 +43,7 @@ public abstract class PowerBase : MonoBehaviour
         heavyAttack.GetComponent<Rigidbody>().AddForce(targetDirection * _heavyRangedSpeed, ForceMode.Impulse);
     }
 
+    // Check if power reserves are empty
     public bool CheckPowerReserves()
     {
         if (PowerReserves <= 0)
@@ -50,6 +54,7 @@ public abstract class PowerBase : MonoBehaviour
         return true;
     }
 
+    // Check if heavy power reserves are empty
     public bool CheckHeavyPowerReserves()
     {
         if (HeavyPowerReserves <= 0)

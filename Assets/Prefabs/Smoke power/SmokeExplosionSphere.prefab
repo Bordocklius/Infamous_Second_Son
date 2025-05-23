@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6229200844387079292}
   - component: {fileID: 8008644116031144889}
   - component: {fileID: 1636552429628717021}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: SmokeExplosionSphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}

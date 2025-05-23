@@ -97,6 +97,7 @@ public class PlayerCharacterControler : MonoBehaviour
 
         _verticalVelocity = _minVerticalVelocity;
 
+        // Hook into input action events
         InputActions = new PlayerControls();
 
         InputActions.Gameplay.Move.performed += ctx => _movementDirection = ctx.ReadValue<Vector2>();
@@ -117,9 +118,7 @@ public class PlayerCharacterControler : MonoBehaviour
         InputActions.Gameplay.Heavyrangedattack.performed += ctx => HeavyRangedAttack();
     }
 
-
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    // Lock cursor and set particle system material
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
@@ -141,17 +140,20 @@ public class PlayerCharacterControler : MonoBehaviour
     {        
         MoveCharacter();
 
+        // Reset jump
         if (_characterController.isGrounded)
         {
             _canJump = true;
             _isJumping = false;
         }
 
+        // Reenable collision after smoke dash
         if (!_isDashing && CurrentPower is SmokePower && _dashTimer >= _dashDuration)
         {
             Physics.IgnoreLayerCollision(6, 8, false);
         }
 
+        // Disable particle system after movement ability
         if(!_isDashing && _dashTimer >= _dashDuration)
         {
             _dashTimer = 0;
@@ -169,6 +171,7 @@ public class PlayerCharacterControler : MonoBehaviour
         Vector3 movement = (cameraRight * _movementDirection.x + cameraForward * _movementDirection.y).normalized;
         float movementspeed = _speed;
 
+        // Handle movement when smokedashing
         if (_isDashing && CurrentPower is SmokePower && _dashTimer < _dashDuration)
         {
             _dashTimer += Time.deltaTime;
@@ -179,12 +182,13 @@ public class PlayerCharacterControler : MonoBehaviour
                 movement = new Vector3(_mainCamera.transform.forward.x, _verticalVelocity.y, _mainCamera.transform.forward.z).normalized;
             }
         }
-        else if(_isDashing && CurrentPower is NeonPower)
+        // Handle movement when neon sprinting
+        else if (_isDashing && CurrentPower is NeonPower)
         {
             _dashTimer += Time.deltaTime;
             movementspeed = _neonSprintSpeed;              
         }
-
+        // Allow sprinting up walls when neon sprinting
         if(_isDashing && CurrentPower is NeonPower && CheckWallInFront())
         {
             _verticalVelocity.y = _characterModelTransform.forward.y + Vector3.up.y;
@@ -200,6 +204,7 @@ public class PlayerCharacterControler : MonoBehaviour
             _isJumping = false;
         }
 
+        // Deal with gravity
         if (_isHovering)
         {
             _verticalVelocity.y = Mathf.Clamp(_verticalVelocity.y + _slowedVerticalVelocity.y * Time.deltaTime, _minVerticalVelocity.y, _jumpVelocity.y);
@@ -234,10 +239,10 @@ public class PlayerCharacterControler : MonoBehaviour
         }
     }
 
+    // Check if wall is in front of player to allow them to grip onto it
     private bool CheckWallInFront()
     {
-        RaycastHit hit;
-        //Physics.Raycast(_characterController.transform.position, _characterModelTransform.forward, out hit, 1f, ~_playerMask);        
+        RaycastHit hit;    
         Physics.Raycast(_characterController.transform.position, _characterModelTransform.forward, out hit, 1f, ~_playerMask);
         if (hit.collider != null && hit.collider.gameObject.tag.ToLower() == "climable")
         {
@@ -246,6 +251,7 @@ public class PlayerCharacterControler : MonoBehaviour
         return false;
     }
 
+    // Start player jump
     private void StartJump()
     {
         if (!_canJump) return;
@@ -256,6 +262,7 @@ public class PlayerCharacterControler : MonoBehaviour
         _verticalVelocity = _jumpVelocity;
     }
 
+    // Activate hover ability
     private void Hover()
     {
         if (_characterController.isGrounded && _isHovering) return;
@@ -265,6 +272,7 @@ public class PlayerCharacterControler : MonoBehaviour
         _playerParticleSystem.SetActive(true);
     }
 
+    // Activate movement ability
     private void MovementAbility()
     {
         if (_isDashing) return;
@@ -272,11 +280,14 @@ public class PlayerCharacterControler : MonoBehaviour
         _isDashing = true;
         _dashTimer = 0;
 
+        // Use smokedash if using smokepower
         if (CurrentPower is SmokePower)
         {
             Physics.IgnoreLayerCollision(6, 8, true);
             _audioSource.PlayOneShot(_dashSound);
         }
+
+        // Use neon sprint if using neonpower
         if(CurrentPower is NeonPower)
         {
             _audioSource.PlayOneShot(_neonSprintSound);
@@ -285,13 +296,12 @@ public class PlayerCharacterControler : MonoBehaviour
         _playerParticleSystem.SetActive(true);
     }
 
+    // Drain power from nearby powersource
     private void PowerDrain()
     {
-        if (!_canDrainPower || !_nearbyPowerSource.Drainable)
-        {
-            return;
-        }
+        if (!_canDrainPower || !_nearbyPowerSource.Drainable) return;
 
+        // Check power of source
         _nearbyPowerSource.DrainSource();
         if (_nearbyPowerSource.PowerName.ToLower() == "smoke")
         {
@@ -302,15 +312,19 @@ public class PlayerCharacterControler : MonoBehaviour
             CurrentPower = this.GetComponent<NeonPower>();
             
         }
+
+        // Set power to drained power and reset power reserves
         CurrentPower.PowerReserves = CurrentPower.MaxPowerReserves;
         CurrentPower.HeavyPowerReserves = CurrentPower.MaxHeavyPowerReserves;
         _playerParticleSystem.GetComponent<ParticleSystemRenderer>().material = CurrentPower.PowerMaterial;
 
+        // Reset power reserves in UI
         OnPowerReservesChange?.Invoke(this);
         OnHeavyPowerReservesChange?.Invoke(this);
         OnPowerChange?.Invoke(this);
     }
 
+    // Fire light attack
     private void LightRangedAttack()
     {
         if (!CurrentPower.CheckPowerReserves()) return;
@@ -321,6 +335,7 @@ public class PlayerCharacterControler : MonoBehaviour
         OnPowerReservesChange?.Invoke(this);
     }
 
+    // Fire heavy attack
     private void HeavyRangedAttack()
     {
         if (!CurrentPower.CheckHeavyPowerReserves()) return;
@@ -331,8 +346,10 @@ public class PlayerCharacterControler : MonoBehaviour
         OnHeavyPowerReservesChange?.Invoke(this);
     }
 
+    // Get aim direction for ranged attacks according to crosshair
     private Vector3 GetAimDirection()
     {
+        // Shoot ray through crosshair
         Ray ray = _mainCamera.ScreenPointToRay(_crosshair.position);
         RaycastHit hit;
         Debug.DrawRay(ray.origin, ray.direction * _range, Color.red, 2f, true);
@@ -345,6 +362,7 @@ public class PlayerCharacterControler : MonoBehaviour
 
         Debug.DrawLine(ray.origin, hit.point, Color.blue, 2f, true);
 
+        // Get direction from shootpoint to hitpoint
         Vector3 direction = (hit.point - _shootPoint.position).normalized;
         _characterModelTransform.rotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
 
@@ -354,6 +372,8 @@ public class PlayerCharacterControler : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         GameObject obj = other.gameObject;
+        
+        // Check if obj is powersource
         if (obj.layer == 9)
         {
             _canDrainPower = !_canDrainPower;
@@ -363,6 +383,7 @@ public class PlayerCharacterControler : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
+        // When player leaves powersource range, disable draining
         if (_canDrainPower)
         {
             _canDrainPower = !_canDrainPower;

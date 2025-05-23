@@ -32,42 +32,32 @@ public class ShotProjectile : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        // If shot is heavy shot, trigger explosion
         if (HeavyShot && !_triggered)
         {
             _triggered = true;
-            Debug.Log("Draw");
+            Explode();
             GameObject explosion = Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
-            Debug.Log("Destroy");
             Destroy(explosion, _explosionTime);
-            Destroy(this.gameObject, _explosionTime);
+            
         }
-        else
-        {
-            Destroy(this.gameObject);
-        }
+
+        Destroy(this.gameObject, _explosionTime);
 
     }
 
-    private IEnumerator ExplosionRoutine()
-    {
-
-        //Explode();
-
-        // Draw explosion effect, persist for time, then destroy it
-        Debug.Log("Draw");
-        GameObject explosion = Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
-        yield return new WaitForSeconds(_explosionTime);
-        Debug.Log("Destroy");
-        Destroy(explosion);
-        Destroy(this.gameObject);
-    }
-
+    // Check if enemies are in explosion range and destroy them
     private void Explode()
     {
         Collider[] colliders = Physics.OverlapSphere(transform.position, _explosionRadius);
         foreach (Collider collider in colliders)
         {
-
+            GameObject obj = collider.gameObject;
+            if (obj.layer == 10)
+            {
+                Enemy enemy = obj.GetComponent<Enemy>();
+                enemy.DestroyEnemy();
+            }
         }
     }
 }

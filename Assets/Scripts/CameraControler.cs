@@ -56,6 +56,7 @@ public class CameraControler : MonoBehaviour
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ AWAKE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     private void Awake()
     {
+        // Hook into input actions
         InputActions = new PlayerControls();
 
         InputActions.Gameplay.MoveCamera.performed += ctx => _cameraMoveDirection = ctx.ReadValue<Vector2>();
@@ -87,14 +88,9 @@ public class CameraControler : MonoBehaviour
         _mainCamera.fieldOfView = _normalCamera.fieldOfView;
         _normalDistanceFromPlayer = Vector3.Distance(_normalCameraTransform.position, _playerCharacterTransform.position);
         _aimDistanceFromPlayer = Vector3.Distance(_aimCameraTransform.position, _playerCharacterTransform.position);
-        Debug.Log(_normalDistanceFromPlayer);
-        Debug.Log(_aimDistanceFromPlayer);
-        Debug.Log(_normalCameraTransform.position - _playerCharacterTransform.position);
     }
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ UPDATE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-
-    // Update is called once per frame
     void Update()
     {
         if (_cameraMoveDirection != Vector2.zero)
@@ -144,6 +140,7 @@ public class CameraControler : MonoBehaviour
         _lerpTimer = 0f;
     }
 
+    // Activate lerp when aiming
     private void Aim()
     {
         if(_changePos)
@@ -160,6 +157,7 @@ public class CameraControler : MonoBehaviour
         }
     }
 
+    // Lerp between positions and FOVs
     private void ChangePos()
     {
         if (_isAiming)
@@ -188,14 +186,11 @@ public class CameraControler : MonoBehaviour
         }
     }
 
+    // Check if camera is colliding with an object
     private void CheckForCollision()
     {        
         LayerMask layermask = (1 << 6) | (1 << 7);
         Physics.Raycast(_playerCharacterTransform.position, (_mainCameraTransform.position - _playerCharacterTransform.position).normalized, out RaycastHit hit, _normalDistanceFromPlayer, ~layermask.value);
-        //if(hit.collider.gameObject.layer == LayerMask.NameToLayer("Attack"))
-        //{
-        //    return;
-        //}
         if (hit.collider != null)
         {
             _isColliding = true;
