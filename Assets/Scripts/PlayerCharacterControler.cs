@@ -43,7 +43,6 @@ public class PlayerCharacterControler : MonoBehaviour
 
     [Space(10)]
     [Header("Power related")]
-    [SerializeField]
     public PowerBase CurrentPower;
     [SerializeField]
     private RectTransform _crosshair;
@@ -51,17 +50,18 @@ public class PlayerCharacterControler : MonoBehaviour
     private Transform _shootPoint;
     [SerializeField]
     private float _range;
-    [SerializeField]
+
     public static event Action<PlayerCharacterControler> OnPowerReservesChange;
-    [SerializeField]
     public static event Action<PlayerCharacterControler> OnHeavyPowerReservesChange;
-    [SerializeField]
     public static event Action<PlayerCharacterControler> OnPowerChange;
 
     private bool _canDrainPower = false;
     private bool _isDashing = false;
+
     [SerializeField]
     private GameObject _playerParticleSystem;
+    [SerializeField]
+    private AudioSource _audioSource;
 
     [Space(10)]
     [Header("Smoke Dash")]
@@ -72,7 +72,9 @@ public class PlayerCharacterControler : MonoBehaviour
     [SerializeField]
     private LayerMask _playerMask;
     [SerializeField]
-    private LayerMask _passableTerrainMask;    
+    private LayerMask _passableTerrainMask;
+    [SerializeField]
+    private AudioClip _dashSound;
 
     [Space(10)]
     [Header("Neon Sprint")]
@@ -80,6 +82,8 @@ public class PlayerCharacterControler : MonoBehaviour
     private float _neonSprintSpeed;
     [SerializeField]
     private float _neonSprintDuration;
+    [SerializeField]
+    private AudioClip _neonSprintSound;
 
     private float _dashTimer;
 
@@ -270,10 +274,12 @@ public class PlayerCharacterControler : MonoBehaviour
 
         if (CurrentPower is SmokePower)
         {
-            Physics.IgnoreLayerCollision(6, 8, true);            
+            Physics.IgnoreLayerCollision(6, 8, true);
+            _audioSource.PlayOneShot(_dashSound);
         }
         if(CurrentPower is NeonPower)
         {
+            _audioSource.PlayOneShot(_neonSprintSound);
         }
 
         _playerParticleSystem.SetActive(true);
@@ -311,6 +317,7 @@ public class PlayerCharacterControler : MonoBehaviour
 
         Vector3 direction = GetAimDirection();
         CurrentPower.FireLightAttack(_shootPoint.position, direction);
+        _audioSource.PlayOneShot(CurrentPower.ShootEffect);
         OnPowerReservesChange?.Invoke(this);
     }
 
@@ -320,6 +327,7 @@ public class PlayerCharacterControler : MonoBehaviour
 
         Vector3 direction = GetAimDirection();
         CurrentPower.FireHeavyAttack(_shootPoint.position, direction);
+        _audioSource.PlayOneShot(CurrentPower.ShootEffect);
         OnHeavyPowerReservesChange?.Invoke(this);
     }
 

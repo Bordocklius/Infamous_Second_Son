@@ -18,17 +18,13 @@ public class UIScript : MonoBehaviour
 
     private void OnEnable()
     {
+        // Hook in to power reserves change events
         PlayerCharacterControler.OnPowerReservesChange += ChangePowerReservesUI;
         PlayerCharacterControler.OnHeavyPowerReservesChange += ChangeHeavyPowerReservesUI;
         PlayerCharacterControler.OnPowerChange += ChangePowerTextUI;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    // I think these events speak for themselves
     private void ChangePowerReservesUI(PlayerCharacterControler playerCharacterControler)
     {
         _powerReservesText.text = $"Power reserves: {playerCharacterControler.CurrentPower.PowerReserves}";        

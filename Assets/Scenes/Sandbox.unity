@@ -2380,17 +2380,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 89.876, z: 0}
---- !u!114 &2068353562 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 321815884164840773, guid: bb4dacb7c3d17404887f4f94357ff8f3, type: 3}
-  m_PrefabInstance: {fileID: 7962910295227939524}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aff0e73f7e30e2641a82c3f9cb9342d7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &1995664236783587963
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2500,10 +2489,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2856738852341910830, guid: 0fb7b84605aa6b74e8835d13aadc345b, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 6bd1d2640027f6049b5d5795b836e937, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2574,25 +2559,9 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 321815884164840773, guid: bb4dacb7c3d17404887f4f94357ff8f3, type: 3}
-      propertyPath: PowerName
-      value: Smoke
-      objectReference: {fileID: 0}
-    - target: {fileID: 321815884164840773, guid: bb4dacb7c3d17404887f4f94357ff8f3, type: 3}
-      propertyPath: HeavyPowerReserves
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 321815884164840773, guid: bb4dacb7c3d17404887f4f94357ff8f3, type: 3}
-      propertyPath: MaxHeavyPowerReserves
-      value: 5
-      objectReference: {fileID: 0}
     - target: {fileID: 441188723104261551, guid: bb4dacb7c3d17404887f4f94357ff8f3, type: 3}
       propertyPath: m_Name
       value: PlayerCharacter
-      objectReference: {fileID: 0}
-    - target: {fileID: 4456598026055715447, guid: bb4dacb7c3d17404887f4f94357ff8f3, type: 3}
-      propertyPath: ShapeModule.radius.value
-      value: 0.56
       objectReference: {fileID: 0}
     - target: {fileID: 4498131615358555468, guid: bb4dacb7c3d17404887f4f94357ff8f3, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2639,33 +2608,9 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1137800232}
     - target: {fileID: 6093136173417207580, guid: bb4dacb7c3d17404887f4f94357ff8f3, type: 3}
-      propertyPath: CurrentPower
+      propertyPath: _hoverSound
       value: 
-      objectReference: {fileID: 2068353562}
-    - target: {fileID: 6093136173417207580, guid: bb4dacb7c3d17404887f4f94357ff8f3, type: 3}
-      propertyPath: _neonSprintSpeed
-      value: 25
-      objectReference: {fileID: 0}
-    - target: {fileID: 6093136173417207580, guid: bb4dacb7c3d17404887f4f94357ff8f3, type: 3}
-      propertyPath: _neonSprintDuration
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 7655675552029548033, guid: bb4dacb7c3d17404887f4f94357ff8f3, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8827414586388858008, guid: bb4dacb7c3d17404887f4f94357ff8f3, type: 3}
-      propertyPath: PowerName
-      value: Neon
-      objectReference: {fileID: 0}
-    - target: {fileID: 8827414586388858008, guid: bb4dacb7c3d17404887f4f94357ff8f3, type: 3}
-      propertyPath: HeavyPowerReserves
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 8827414586388858008, guid: bb4dacb7c3d17404887f4f94357ff8f3, type: 3}
-      propertyPath: MaxHeavyPowerReserves
-      value: 5
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 8300000, guid: a3d2ef13ff3fcdb468384a7926dced13, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

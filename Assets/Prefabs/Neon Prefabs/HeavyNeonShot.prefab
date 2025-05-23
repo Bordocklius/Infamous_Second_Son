@@ -150,3 +150,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _lifeTime: 5
+  HeavyShot: 1
+  _explosionRadius: 5
+  _explosionPrefab: {fileID: 8585006152060924364, guid: da55a0cc81f44944ab37c214ef9074c3, type: 3}
+  _explosionTime: 1

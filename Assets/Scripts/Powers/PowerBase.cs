@@ -12,23 +12,17 @@ public abstract class PowerBase : MonoBehaviour
     private float _lightRangedSpeed;
     [SerializeField]
     private float _heavyRangedSpeed;
+    public AudioClip ShootEffect;
 
     [Space(10)]
-    [SerializeField]
     public float PowerReserves;
-    [SerializeField]
     public float HeavyPowerReserves;
-    [SerializeField]
     public float MaxPowerReserves;
-    [SerializeField]
     public float MaxHeavyPowerReserves;
-    [SerializeField]
     public Material PowerMaterial;
-    [SerializeField]
     public string PowerName;
 
     [Space(10)]
-    [SerializeField]
     public float GlideSlow;
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
