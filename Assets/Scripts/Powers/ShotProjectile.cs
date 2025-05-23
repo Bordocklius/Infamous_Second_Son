@@ -39,7 +39,7 @@ public class ShotProjectile : MonoBehaviour
             Explode();
             GameObject explosion = Instantiate(_explosionPrefab, transform.position, Quaternion.identity);
             Destroy(explosion, _explosionTime);
-            
+
         }
 
         Destroy(this.gameObject, _explosionTime);
@@ -50,14 +50,22 @@ public class ShotProjectile : MonoBehaviour
     private void Explode()
     {
         Collider[] colliders = Physics.OverlapSphere(transform.position, _explosionRadius);
+        bool deathAudioPlayed = false;
+
         foreach (Collider collider in colliders)
         {
             GameObject obj = collider.gameObject;
             if (obj.layer == 10)
             {
                 Enemy enemy = obj.GetComponent<Enemy>();
-                enemy.DestroyEnemy();
+                if (!deathAudioPlayed)
+                {
+                    enemy.PlayDeathAudio();
+                    deathAudioPlayed = true;
+                }
+                enemy.DestroyEnemy(false);
             }
+
         }
     }
 }

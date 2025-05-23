@@ -10,12 +10,6 @@ public class UIScript : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI _powerText;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
     private void OnEnable()
     {
         // Hook in to power reserves change events
@@ -38,5 +32,11 @@ public class UIScript : MonoBehaviour
     private void ChangePowerTextUI(PlayerCharacterControler playerCharacterControler)
     {
         _powerText.text = $"Current power: {playerCharacterControler.CurrentPower.PowerName}";
+    }
+
+    public void OnStartButtonClick()
+    {
+        // Load sandbox scene
+        UnityEngine.SceneManagement.SceneManager.LoadScene("Sandbox");
     }
 }
