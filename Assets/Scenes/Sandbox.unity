@@ -3366,6 +3366,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 146088412188272326, guid: 4fb278c6b4b795d43883f912f8e65391, type: 3}
   m_PrefabInstance: {fileID: 1894165053}
   m_PrefabAsset: {fileID: 0}
+--- !u!82 &2029584590 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 3833075274211724189, guid: bb4dacb7c3d17404887f4f94357ff8f3, type: 3}
+  m_PrefabInstance: {fileID: 7962910295227939524}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2049218411
 GameObject:
   m_ObjectHideFlags: 0
@@ -3751,9 +3756,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerCharacter
       objectReference: {fileID: 0}
+    - target: {fileID: 767023469520364218, guid: bb4dacb7c3d17404887f4f94357ff8f3, type: 3}
+      propertyPath: _audioSource
+      value: 
+      objectReference: {fileID: 2029584590}
     - target: {fileID: 3833075274211724189, guid: bb4dacb7c3d17404887f4f94357ff8f3, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4498131615358555468, guid: bb4dacb7c3d17404887f4f94357ff8f3, type: 3}
       propertyPath: m_LocalPosition.x

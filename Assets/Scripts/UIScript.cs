@@ -10,7 +10,7 @@ public class UIScript : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI _powerText;
 
-    private void OnEnable()
+    private void Start()
     {
         // Hook in to power reserves change events
         PlayerCharacterControler.OnPowerReservesChange += ChangePowerReservesUI;
@@ -32,11 +32,5 @@ public class UIScript : MonoBehaviour
     private void ChangePowerTextUI(PlayerCharacterControler playerCharacterControler)
     {
         _powerText.text = $"Current power: {playerCharacterControler.CurrentPower.PowerName}";
-    }
-
-    public void OnStartButtonClick()
-    {
-        // Load sandbox scene
-        UnityEngine.SceneManagement.SceneManager.LoadScene("Sandbox");
     }
 }

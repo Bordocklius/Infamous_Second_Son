@@ -53,6 +53,9 @@ public class CameraControler : MonoBehaviour
     private float _aimDistanceFromPlayer;
     private bool _isColliding = false;
 
+    [SerializeField]
+    private AudioSource _audioSource;
+
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ AWAKE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     private void Awake()
     {
@@ -106,6 +109,17 @@ public class CameraControler : MonoBehaviour
         // checks for collision with obstacles
         CheckForCollision();
 
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            if(_audioSource.mute)
+            {
+                _audioSource.mute = false;
+            }
+            else
+            {
+                _audioSource.mute = true;
+            }
+        }
     }
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ METHODS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
